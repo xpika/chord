@@ -14,26 +14,29 @@ import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin,getPo
 import Music.Instrument.Piano
 import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,deepenListOfLists)
 
-{-
-class Positional where
- getPositions :: [[[Int]]]
+renderGuitarChord :: ControlAnnotation -> Bool -> Bool -> [Note] -> Chord -> Int -> Int -> [Char]
+renderGuitarChord controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
+ head $
+    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from
 
-instance 
--}
+renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
+  drop from $
+    renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight
 
-renderGuitarChords :: ControlAnnotation -> Bool -> Bool -> [Note] -> Chord -> Int -> [Char]
-renderGuitarChords controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight =
-    heading $ concat $ intersperse "\n" $ 
-        renderPositionPatternsRange firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns'
-    where
-    positionPatterns' = deepenListOfLists positionPatterns
-    positionPatterns = head $ take 1 $ filter (not . null) $ findPositionPatterns chord tuning maxHeight
-    minPosition = getPositionMultiPatternMin positionPatterns'
-    heading | minPosition /= 0 = (++) ("Fret: " ++ show minPosition ++ "\n")
-            | otherwise = id
+renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight =
+  map (renderGuitarChord''' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight)
+    (map deepenListOfLists $ filter (not . null) $ findPositionPatterns chord tuning maxHeight)
+
+renderGuitarChord''' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight positionPatterns =
+  heading $ concat $ intersperse "\n" $ 
+      renderPositionPatternsRange firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns
+  where
+  minPosition = getPositionMultiPatternMin positionPatterns
+  heading | minPosition /= 0 = (++) ("Fret: " ++ show minPosition ++ "\n")
+          | otherwise = id
 
 renderPositionPatternsRange firstTuningFirst orientationVertical controlAnnotation tuning count positionPatterns' = 
-  map ( renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tuning minPosition (count-1)) positionPatterns'
+  map (renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tuning minPosition (count-1)) positionPatterns'
   where minPosition = getPositionMultiPatternMin positionPatterns'
 
 renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tuning from maximumPosition positionPattern = 
@@ -47,7 +50,7 @@ renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tun
                  | otherwise = reverse
 
 renderGuitarString stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning = 
-   lineBreaker $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) [from..(from + max)]
+  lineBreaker $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) [from..(from + max)]
   where lineBreaker | orientationVertical = intersperse '\n' 
                     | otherwise = id
 
@@ -56,10 +59,10 @@ char stringIndex orientationVertical stringTuning positionIndices controlAnnotat
   | otherwise = fretChar orientationVertical index
 
 fingeringChar stringIndex stringTuning positionIndex controlAnnotation = case controlAnnotation of 
-    AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
-    AnnotateMarking -> fingeringCharUnannotated positionIndex
-    AnnotatePositionVertical -> head (show positionIndex)
-    AnnotatePositionHorizontal -> head (show stringIndex)
+  AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
+  AnnotateMarking -> fingeringCharUnannotated positionIndex
+  AnnotatePositionVertical -> head (show positionIndex)
+  AnnotatePositionHorizontal -> head (show stringIndex)
 
 fretChar orientationVertical 0 | orientationVertical = '='
                                | otherwise = '|'

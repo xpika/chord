@@ -15,15 +15,15 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking True False standardTuning (minorChord B) 4)
-Fret: 2
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking True False standardTuning (minorChord C) 4 1)
+Fret: 3
 *---
 *---
 --*-
 --*-
 -*--
 *---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking False True dropD (majorChord F) 4)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking False True dropD (majorChord F) 4 0)
 =o====
 ----**
 ---*--
@@ -33,7 +33,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking Fal
 ----**
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateNote False True standardTuning (majorChord G) 4)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote False True standardTuning (majorChord G) 4 0)
 ==GDA=
 ------
 -d----
@@ -43,7 +43,7 @@ G----G
 ------
 -d----
 G---CG
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePositionVertical False True ukelele (majorChord C) 4)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionVertical False True ukelele (majorChord C) 4 0)
 000=
 ----
 ----
