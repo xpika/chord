@@ -38,6 +38,8 @@ getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 getPositionPatternMin = minimum . map minimum 
 getPositionPatternMax = maximum . map maximum
 
+getPositionMultiPatternMax = maximum . map maximum . map maximum
+getPositionMultiPatternMin = minimum . map minimum . map minimum
 
 dropD = [D,A,D,G,B,E]
 

@@ -16,6 +16,7 @@ main = do file <- readFile "README.md.template"
                                 ++(makeGhciLine (expressions!!3)) ++ "\n" ++ $(return (getExpression (expressions!!3) )) 
                                 ++(makeGhciLine (expressions!!4)) ++ "\n" ++ $(return (getExpression (expressions!!4) ))
                                 ++(makeGhciLine (expressions!!5)) ++ "\n" ++ $(return (getExpression (expressions!!5) ))
+                                ++(makeGhciLine (expressions!!6)) ++ "\n" ++ show ($(return (getExpression (expressions!!6) )))
                               )
                              fileLines
           writeFile "README.md" modifiedFile
