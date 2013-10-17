@@ -7,6 +7,7 @@ Render music chords on a guitar and piano
 
 Example:
 
+```
 *Main> putStrLn (renderChords  (C , majorChord  ))
 ----x-
 --x---
@@ -24,3 +25,4 @@ xx----
 --x---
 xx---x
 ------
+```
