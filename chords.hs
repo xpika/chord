@@ -20,7 +20,7 @@ chordPositions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex)
 renderString :: Int -> String
 renderString  =   (\n -> map (\x->if x==n then 'x' else '-') [1,2,3,4]) 
 
-renderChords chord = concat $ map  ( unlines) $ map Data.List.transpose $ map ( map renderString) (chordPositions chord)
+renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (chordPositions chord)
 
 extractChord (note,chord) = map snd $ degrees $ chord note
 
