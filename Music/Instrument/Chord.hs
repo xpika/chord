@@ -1,8 +1,8 @@
 module Chord 
-{-(
+(
   renderChords
  ,module Music.Diatonic
-)-}
+)
 where
 
 import Music.Diatonic 
