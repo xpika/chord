@@ -8,24 +8,28 @@ Render music chords on a guitar and piano
 Example:
 
 ```
-*Main> putStrLn (renderChords  (C , majorChord  ))
-----x-
---x---
--x----
+*Chord> putStrLn (renderChords  (C , majorChord  ))
+o--o-o
+----*-
+--*---
+-*----
 ------
        
-----x-
---x---
--x---x
+o--o--
+----*-
+--*---
+-*---*
 ------
        
-----x-
---x---
-xx----
+---o-o
+----*-
+--*---
+**----
 ------
        
-----x-
---x---
-xx---x
+---o--
+----*-
+--*---
+**---*
 ------
 ```

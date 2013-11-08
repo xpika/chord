@@ -1,7 +1,9 @@
-module Chord (
+module Chord 
+{-(
   renderChords
  ,module Music.Diatonic
-) where
+)-}
+where
 
 import Music.Diatonic 
 import Music.Diatonic.Chord
@@ -23,7 +25,10 @@ majorFingerings chord = sequence $ map (filter (flip elem (extractChord chord) )
 chordPositions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (majorFingerings chord)
 
 renderString :: Int -> String
-renderString  =   (\n -> map (\x->if x==n then 'x' else '-') [1,2,3,4]) 
+renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0,1,2,3,4])
+
+modifyHead f (x:xs) = (f x:xs)
+modifyHead f [] = []
 
 renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (chordPositions chord)
 
