@@ -1,3 +1,8 @@
+module Chord (
+  renderChords
+ ,module Music.Diatonic
+) where
+
 import Music.Diatonic 
 import Music.Diatonic.Chord
 import Data.List
@@ -23,6 +28,3 @@ renderString  =   (\n -> map (\x->if x==n then 'x' else '-') [1,2,3,4])
 renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (chordPositions chord)
 
 extractChord (note,chord) = map snd $ degrees $ chord note
-
-
-
