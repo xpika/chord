@@ -8,7 +8,8 @@ Render music chords on a guitar and piano
 Example:
 
 ```
-*Chord> putStrLn (renderChords  (C , majorChord  ))
+Prelude Music.Diatonic Music.Instrument.Chord Music.Diatonic.Chord>  putStrLn (renderChords  (C , majorChord  ))
+
 o--o-o
 ----*-
 --*---

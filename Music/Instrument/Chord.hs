@@ -1,4 +1,4 @@
-module Chord 
+module Music.Instrument.Chord 
 (
   renderChords
  ,module Music.Diatonic
