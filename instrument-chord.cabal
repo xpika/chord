@@ -2,7 +2,7 @@
 --  see http://haskell.org/cabal/users-guide/
 
 name:                instrument-chord
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Render Instrument Chords
 description:         Library which Pretty Prints Guitar Chords
 homepage:            https://github.com/xpika/chord
