@@ -3,8 +3,8 @@
 
 name:                instrument-chord
 version:             0.1.0.0
-synopsis:            Render Musical Chords on Instrument
--- description:         
+synopsis:            Render Instrument Chords
+description:         Library which Pretty Prints Guitar Chords
 homepage:            xy30.com
 license:             GPL-3
 license-file:        LICENSE
