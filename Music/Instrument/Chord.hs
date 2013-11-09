@@ -21,12 +21,12 @@ standardTuningFrets = map (\n -> (map (canonize . applyNTimes sharp n) standardT
 standardTuningFirstFourFrets = take 4 standardTuningFrets
 standardTuningFirstFourFretsStrings  = Data.List.transpose standardTuningFirstFourFrets 
 
-majorFingerings chord = sequence $ map (filter (flip elem (extractChord chord) )) ( standardTuningFirstFourFretsStrings )
+fingerings chord = sequence $ map (filter (flip elem (extractChord chord) )) ( standardTuningFirstFourFretsStrings )
 
-chordPositions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (majorFingerings chord)
+chordPositions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (fingerings chord)
 
 renderString :: Int -> String
-renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0,1,2,3,4])
+renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..4])
 
 modifyHead f (x:xs) = (f x:xs)
 modifyHead f [] = []
