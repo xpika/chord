@@ -12,28 +12,4 @@ $ghci
 
 Prelude>:m + Music.Instrument.Chord Music.Diatonic.Chord
 Prelude Music.Instrument.Chord Music.Diatonic.Chord>  putStrLn (renderChords  (C , majorChord  ))
-o--o-o
-----*-
---*---
--*----
-------
-       
-o--o--
-----*-
---*---
--*---*
-------
-       
----o-o
-----*-
---*---
-**----
-------
-       
----o--
-----*-
---*---
-**---*
-------
-
 ```

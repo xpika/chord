@@ -2,6 +2,7 @@ module Music.Instrument.Chord
 (
   renderChords
  ,module Music.Diatonic
+ ,module Music.Diatonic.Chord
 )
 where
 
