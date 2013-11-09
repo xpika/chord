@@ -23,7 +23,7 @@ standardTuningFirstFourFretsStrings  = Data.List.transpose standardTuningFirstFo
 
 fingerings chord = sequence $ map (filter (flip elem (extractChord chord) )) ( standardTuningFirstFourFretsStrings )
 
-chordPositions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (fingerings chord)
+positions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (fingerings chord)
 
 renderString :: Int -> String
 renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..4])
@@ -31,6 +31,6 @@ renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if
 modifyHead f (x:xs) = (f x:xs)
 modifyHead f [] = []
 
-renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (chordPositions chord)
+renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (positions chord)
 
 extractChord (note,chord) = map snd $ degrees $ chord note
