@@ -3,14 +3,14 @@ Instrument Chord
 
 Render music chords on a guitar and piano
 
-cabal install instrumet-chord
+cabal install instrument-chord
 
 Example:
 
 ```
 $ghci
 
-Prelude>:m + Music.Instrument.Chord
+Prelude>:m + Music.Instrument.Chord 
 Prelude Music.Instrument.Chord>  putStrLn (renderChords  (C , majorChord  ))
 o--o-o
 ----*-
