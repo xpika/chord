@@ -23,14 +23,15 @@ standardTuningFirstFourFretsStrings  = Data.List.transpose standardTuningFirstFo
 
 fingerings chord = sequence $ map (filter (flip elem (extractChord chord) )) ( standardTuningFirstFourFretsStrings )
 
-positions chord =  map (map fromJust ) $ map (map (uncurry (flip elemIndex) )) $ map (zipWith (,) standardTuningFirstFourFretsStrings   )  (fingerings chord)
+positions chord =  map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ map (zipWith (,) standardTuningFirstFourFretsStrings) (fingerings chord)
 
-renderString :: Int -> String
-renderString n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..4])
+renderString max n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..max])
 
 modifyHead f (x:xs) = (f x:xs)
 modifyHead f [] = []
 
-renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $  map Data.List.transpose $ map ( map renderString) (positions chord)
+renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $ map Data.List.transpose $ map ( map (renderString maximumPosition)) chordPositions
+  where chordPositions = positions chord
+        maximumPosition = maximum $ (map maximum) chordPositions
 
 extractChord (note,chord) = map snd $ degrees $ chord note
