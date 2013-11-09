@@ -3,15 +3,15 @@ Instrument Chord
 
 Render music chords on a guitar and piano
 
-* Requires https://github.com/xpika/music-diatonic
+cabal install instrumet-chord
 
 Example:
 
 ```
 $ghci
 
-Prelude>:m + Music.Instrument.Chord Music.Diatonic.Chord
-Prelude Music.Instrument.Chord Music.Diatonic.Chord>  putStrLn (renderChords  (C , majorChord  ))
+Prelude>:m + Music.Instrument.Chord
+Prelude Music.Instrument.Chord>  putStrLn (renderChords  (C , majorChord  ))
 o--o-o
 ----*-
 --*---
