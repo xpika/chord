@@ -11,25 +11,10 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderChords C majorChord)
-o--o-o
+Prelude Music.Instrument.Chord> putStrLn (renderChords  (C , majorChord  ))
+-oo---
+------
+*--*-*
 ----*-
---*---
--*----
-       
-o--o--
-----*-
---*---
--*---*
-       
----o-o
-----*-
---*---
-**----
-       
----o--
-----*-
---*---
-**---*
 
 ```
