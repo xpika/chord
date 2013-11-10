@@ -2,7 +2,7 @@ import System.IO
 import Music.Instrument.Chord 
 
 main = do file <- readFile "README.md.template"
-          let chordsOutPut =  (renderChords (C,majorChord))
+          let chordsOutPut =  (renderChords C majorChord)
           let modifiedFile = unlines $ insertAt 14 chordsOutPut (lines file)
           writeFile "README.md" modifiedFile
 

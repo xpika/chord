@@ -27,11 +27,11 @@ positions chord =  map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ m
 
 renderString max n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..max])
 
-modifyHead f (x:xs) = (f x:xs)
 modifyHead f [] = []
+modifyHead f xs = f (head xs):tail xs
 
-renderChords chord = concat $ map  ( unlines) $ intersperse ["       "] $ map Data.List.transpose $ map ( map (renderString maximumPosition)) chordPositions
-  where chordPositions = positions chord
+renderChords chordRoot chordForm = concat $ map unlines $ intersperse ["       "] $ map Data.List.transpose $ map ( map (renderString maximumPosition)) chordPositions
+  where chordPositions = positions (chordRoot,chordForm)
         maximumPosition = maximum $ (map maximum) chordPositions
 
-extractChord (note,chord) = map snd $ degrees $ chord note
+extractChord noteChordTuple = map snd $ degrees $ (snd noteChordTuple) (fst noteChordTuple)
