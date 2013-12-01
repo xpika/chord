@@ -1,7 +1,7 @@
 Instrument Chord
 =====
 
-Render music chords on a guitar and piano
+Render music chords on a guitar
 
 cabal install instrument-chord
 
