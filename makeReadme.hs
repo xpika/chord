@@ -6,12 +6,14 @@ import Language.Haskell.Meta.Parse.Careful
 import Data.Either
 import GetExpression
 
-makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
-
 
 main = do file <- readFile "README.md.template"
-          let chordsOutPut = $(return (getExpression (expressions!!0) ))
-          let modifiedFile = unlines $ insertAt 14 chordsOutPut (lines file)
+          let fileLines = lines file
+          let modifiedFile = unlines $ insertAt (length fileLines -1) (
+                                  (makeGhciLine (expressions!!0)) ++ "\n" ++ $(return (getExpression (expressions!!0) ))  ++ "\n"
+                                ++(makeGhciLine (expressions!!1)) ++ "\n" ++ $(return (getExpression (expressions!!1) )) 
+                              )
+                             fileLines
           writeFile "README.md" modifiedFile
 
 insertAt = (\n x xs -> case splitAt n xs of { (a, b) -> a ++ [x] ++ b })
