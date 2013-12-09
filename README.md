@@ -3,6 +3,7 @@ Instrument Chord
 
 Render music chords on a guitar
 
+Installation:
 ```
 $cabal install instrument-chord
 ```
