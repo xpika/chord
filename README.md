@@ -3,7 +3,9 @@ Instrument Chord
 
 Render music chords on a guitar
 
-cabal install instrument-chord
+```
+$cabal install instrument-chord
+```
 
 Example:
 
