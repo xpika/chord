@@ -13,8 +13,7 @@ import Data.Maybe
 
 standardTuningFirstFret = [E,A,D,G,B,E]
 
-applyNTimes f 0 x = x
-applyNTimes f n x = applyNTimes f (n-1) (f x)
+applyNTimes f n x = iterate f x !! n
 
 standardTuningFrets = map (\n -> (map (canonize . applyNTimes sharp n) standardTuningFirstFret)) [0..] 
 
