@@ -1,6 +1,8 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Music.Instrument.Chord 
 (
   renderChords
+ ,renderChordsAnnotatingNotes
  ,module Music.Diatonic
  ,module Music.Diatonic.Chord
 )
@@ -11,26 +13,45 @@ import Music.Diatonic.Chord
 import Data.List
 import Data.Maybe
 
-standardTuningFirstFret = [E,A,D,G,B,E]
+renderChords :: Deg s Note => a -> (a -> s) -> [Char]
+renderChords = renderChords' False
 
-applyNTimes f n x = iterate f x !! n
+renderChordsAnnotatingNotes :: Deg s Note => a -> (a -> s) -> [Char]
+renderChordsAnnotatingNotes = renderChords' True
 
-standardTuningFrets = map (\n -> (map (canonize . applyNTimes sharp n) standardTuningFirstFret)) [0..] 
+renderChords' :: Deg s Note => Bool -> a -> (a -> s) -> [Char]
+renderChords' b chordRoot chordForm = concat $ map unlines $ intersperse ["       "] $ map Data.List.transpose $ 
+  map (renderFretBoardHorizontal chordRoot chordForm b) (zipWith zip chordPositionsVertical chordNotesVertical)
+    where chordPositionsVertical = positionsVertical (chordRoot,chordForm)
+          chordNotesVertical = notesVertical (chordRoot,chordForm)
 
-standardTuningFirstFourFrets = take 4 standardTuningFrets
-standardTuningFirstFourFretsStrings  = Data.List.transpose standardTuningFirstFourFrets 
+renderFretBoardHorizontal chordRoot chordForm b  = map (\(pos,n) -> renderString maximumPosition (char n) pos)
+  where
+  char n = case b of True -> (Just (head $ show n))
+                     False -> Nothing
+  maximumPosition = maximum $ (map maximum) chordPositionsVertical
+  chordPositionsVertical = positionsVertical (chordRoot,chordForm)
 
-fingerings chord = sequence $ map (filter (flip elem (extractChord chord) )) ( standardTuningFirstFourFretsStrings )
+renderString max char n =  modifyHead ((\x -> if x=='-' then '-' else openChar))  (map (\x->if x==n then (closedChar) else ('-')) [0..max])
+  where (openChar,closedChar) = case char of { Just c -> (c,c);_ -> ('o','*')}
 
-positions chord =  map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ map (zipWith (,) standardTuningFirstFourFretsStrings) (fingerings chord)
+positionsVertical :: Deg s Note => (a, a -> s) -> [[Int]]
+positionsVertical chord =  map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ map (zipWith (,) standardTuningFirstFourFretsVertical) (notesVertical chord)
 
-renderString max n =  modifyHead ((\x -> if x=='-' then '-' else 'o'))  (map (\x->if x==n then ('*') else ('-')) [0..max])
+notesVertical chord = sequence $ map (filter (flip elem (extractChord chord) )) standardTuningFirstFourFretsVertical
+
+standardTuningFirstFourFretsVertical :: [[Note]]
+standardTuningFirstFourFretsVertical = Data.List.transpose standardTuningFirstFourFrets 
 
 modifyHead f [] = []
 modifyHead f xs = f (head xs):tail xs
 
-renderChords chordRoot chordForm = concat $ map unlines $ intersperse ["       "] $ map Data.List.transpose $ map ( map (renderString maximumPosition)) chordPositions
-  where chordPositions = positions (chordRoot,chordForm)
-        maximumPosition = maximum $ (map maximum) chordPositions
-
 extractChord noteChordTuple = map snd $ degrees $ (snd noteChordTuple) (fst noteChordTuple)
+standardTuningFirstFourFrets = take 4 standardTuningFrets
+
+standardTuningFrets :: [[Note]]
+standardTuningFrets = map (\n -> (map (canonize . applyNTimes sharp n) standardTuningFirstFret)) [0..] 
+
+applyNTimes f n x = iterate f x !! n
+
+standardTuningFirstFret = [E,A,D,G,B,E]

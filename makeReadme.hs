@@ -12,6 +12,7 @@ main = do file <- readFile "README.md.template"
           let modifiedFile = unlines $ insertAt (length fileLines -1) (
                                   (makeGhciLine (expressions!!0)) ++ "\n" ++ $(return (getExpression (expressions!!0) ))  ++ "\n"
                                 ++(makeGhciLine (expressions!!1)) ++ "\n" ++ $(return (getExpression (expressions!!1) )) 
+                                ++(makeGhciLine (expressions!!2)) ++ "\n" ++ $(return (getExpression (expressions!!2) )) 
                               )
                              fileLines
           writeFile "README.md" modifiedFile

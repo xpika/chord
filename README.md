@@ -21,25 +21,25 @@ Prelude Music.Instrument.Chord> putStrLn (renderChords D majorChord)
 *--*-*
 ----*-
 
-Prelude Music.Instrument.Chord> putStrLn (renderChords C majorChord)
-o--o-o
+Prelude Music.Instrument.Chord> putStrLn (renderChords A minorChord)
+oo---o
 ----*-
---*---
+--**--
+------
+       
+o----o
+----*-
+--**--
 -*----
+Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotatingNotes G majorChord)
+--DGB-
+------
+-B----
+G----G
        
-o--o--
-----*-
---*---
--*---*
-       
----o-o
-----*-
---*---
-**----
-       
----o--
-----*-
---*---
-**---*
+--DG--
+------
+-B----
+G---DG
 
 ```

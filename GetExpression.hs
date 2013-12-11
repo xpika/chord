@@ -15,5 +15,6 @@ makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
 
 expressions = [
   "renderChords D majorChord"
- ,"renderChords C majorChord"
+ ,"renderChords A minorChord"
+ ,"renderChordsAnnotatingNotes G majorChord"
  ]
