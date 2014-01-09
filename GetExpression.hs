@@ -14,7 +14,7 @@ getExpressionAndLine string = (makeGhciLine string , head $ rights [parseExp str
 makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
 
 expressions = [
-  "renderChords D majorChord"
- ,"renderChords A minorChord"
- ,"renderChordsAnnotatingNotes G majorChord"
+  "renderChords majorChord B"
+ ,"renderMajorChordsWithTuning dropD F"
+ ,"renderChordsAnnotatingNotes majorChord G"
  ]

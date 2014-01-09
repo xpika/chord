@@ -15,23 +15,31 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderChords D majorChord)
--oo---
+Prelude Music.Instrument.Chord> putStrLn (renderChords majorChord B)
+--o---
+**---*
 ------
-*--*-*
-----*-
-
-Prelude Music.Instrument.Chord> putStrLn (renderChords A minorChord)
-oo---o
-----*-
---**--
-------
+---**-
        
-o----o
-----*-
---**--
--*----
-Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotatingNotes G majorChord)
+------
+**---*
+------
+--***-
+
+Prelude Music.Instrument.Chord> putStrLn (renderMajorChordsWithTuning dropD F)
+-o----
+----**
+---*--
+*-*---
+       
+------
+----**
+---*--
+***---
+----oo
+---*--
+***---
+Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotatingNotes majorChord G)
 --DGB-
 ------
 -B----
