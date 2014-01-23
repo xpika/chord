@@ -16,36 +16,36 @@ $ghci
 
 Prelude>:m + Music.Instrument.Chord 
 Prelude Music.Instrument.Chord> putStrLn (renderChords majorChord B)
---o---
+==o===
 **---*
 ------
 ---**-
        
-------
+======
 **---*
 ------
 --***-
 
 Prelude Music.Instrument.Chord> putStrLn (renderMajorChordsWithTuning dropD F)
--o----
+=o====
 ----**
 ---*--
 *-*---
        
-------
+======
 ----**
 ---*--
 ***---
-----oo
+====oo
 ---*--
 ***---
 Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotatingNotes majorChord G)
---DGB-
+==DGB=
 ------
 -B----
 G----G
        
---DG--
+==DG==
 ------
 -B----
 G---DG
