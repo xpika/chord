@@ -39,7 +39,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderMajorChordsWithTuning dropD F)
 ====oo
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotatingNotes majorChord G)
+Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotateNote majorChord G)
 ==DGB=
 ------
 -B----
@@ -49,5 +49,10 @@ G----G
 ------
 -B----
 G---DG
+Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotatePosition majorChord D)
+=00===
+------
+2--2-2
+----3-
 
 ```
