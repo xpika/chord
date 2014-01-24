@@ -87,3 +87,7 @@ applyNTimes f n x = iterate f x !! n
 standardTuning = [E,A,D,G,B,E]
 
 tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
+
+
+data Instrument = Guitar | Piano
+pianoTuning = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
