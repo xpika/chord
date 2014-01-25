@@ -18,4 +18,7 @@ expressions = [
  ,"renderMajorChordsWithTuning dropD F"
  ,"renderChordsAnnotating AnnotateNote majorChord G"
  ,"renderChordsAnnotating AnnotatePosition majorChord D"
+ ,"renderPianoChord majorChord C"
  ]
+
+ 

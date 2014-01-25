@@ -16,13 +16,17 @@ module Music.Instrument.Chord
  renderMajorChordsWithTuning
  ,
  ControlAnnotation(..)
+ ,
+ renderPianoChord
 )
 where
 
 import Music.Diatonic 
 import Music.Diatonic.Chord
+import Music.Diatonic.Note
 import Data.List
 import Data.Maybe
+import Data.Char
 
 type Tuning = [Note]
 
@@ -30,6 +34,13 @@ dropD :: Tuning
 dropD = [D,A,D,G,B,E]
 
 data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
+
+data Instrument = Guitar | Piano
+
+renderPianoChord :: Deg s Note => (a -> s) -> a -> [Char]
+renderPianoChord chordForm chordRoot = renderPiano (map noteToChromaticIndex notes)
+    where notes = extractChord (chordRoot,chordForm)
+          noteToChromaticIndex note = fromJust (elemIndex note chromaticScale)
 
 renderMajorChordsWithTuning tuning = renderChordsWithTuning tuning majorChord 
 
@@ -58,7 +69,7 @@ renderString annotate_notes max p iteration stringTuning = map (\i->char i p) [0
   where char index pos | index == pos = fingeringChar pos
                        | otherwise = fretChar index 
         fingeringChar pos = case annotate_notes of { 
-                  AnnotateNote -> head (show $ tuningAndPosToNote stringTuning pos) 
+                  AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning pos
                 ; AnnotateMarking -> fingeringCharUnannotated pos
                 ; AnnotatePosition -> head (show pos)
         }
@@ -88,6 +99,31 @@ standardTuning = [E,A,D,G,B,E]
 
 tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
 
+abbreviateNote x = "cCdDefFgGaAb" !! n 
+    where (Just n) = elemIndex x chromaticScale
 
-data Instrument = Guitar | Piano
-pianoTuning = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
+chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
+
+replaceAt i v xs = map (\(x,i') -> if i==i' then v else x) $  zip xs [0..]
+   
+renderPiano positions = foldl (markPiano '*') cleanPiano positions
+  
+markPiano marking piano position   = replaceAt (getPianoPositionCharacterIndex position) marking piano
+
+
+cleanPiano = map (\x -> if elem x pianoMarkings then ' ' else x ) markedPiano
+          
+            
+getPianoPositionCharacterIndex pos = i
+    where (Just i) = elemIndex (pianoMarkings !! pos) markedPiano
+
+pianoMarkings = ['a'..'l']
+
+markedPiano = unlines
+        [
+         "  ____________________ "
+        ," | |b||d| | |g||i||k| |"
+        ," | |_||_| | |_||_||_| |"
+        ," |a |c |e |f |h |j |l |"
+        ," |__|__|__|__|__|__|__|"
+        ]

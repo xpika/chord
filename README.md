@@ -1,7 +1,7 @@
 Instrument Chord
 =====
 
-Render music chords on instruments (Just guitar at this stage).
+Render music chords on a guitar and piano
 
 Installation:
 
@@ -40,19 +40,25 @@ Prelude Music.Instrument.Chord> putStrLn (renderMajorChordsWithTuning dropD F)
 ---*--
 ***---
 Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotateNote majorChord G)
-==DGB=
+==dgb=
 ------
--B----
-G----G
+-b----
+g----g
        
-==DG==
+==dg==
 ------
--B----
-G---DG
+-b----
+g---dg
 Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotatePosition majorChord D)
 =00===
 ------
 2--2-2
 ----3-
+Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord C)
+  ____________________ 
+ | | || | | | || || | |
+ | |_||_| | |_||_||_| |
+ |* |  |* |  |* |  |  |
+ |__|__|__|__|__|__|__|
 
 ```
