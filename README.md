@@ -15,7 +15,7 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderChords majorChord B)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords majorChord B)
 ==o===
 **---*
 ------

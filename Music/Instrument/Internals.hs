@@ -14,11 +14,7 @@ import Music.Instrument.Common
 
 type Tuning = [Note]
 
-data Instrument = Guitar | Piano
-
-renderChords = renderChordsFirstFiveFretsWithMaximumHeightOfFour AnnotateMarking standardTuning
-
-
+renderGuitarChords = renderChordsFirstFiveFretsWithMaximumHeightOfFour AnnotateMarking standardTuning
 
 inversions = map  sequenceDegrees  . rotations 
 
@@ -33,16 +29,15 @@ renderChordsWithTuning tuning = renderChordsFirstFiveFretsWithMaximumHeightOfFou
 renderChordsAnnotating annotation = renderChordsFirstFiveFretsWithMaximumHeightOfFour annotation standardTuning
 
 renderChordsFirstFiveFretsWithMaximumHeightOfFour :: ControlAnnotation -> [Note] -> (Note -> Chord) -> Note -> [Char]
-renderChordsFirstFiveFretsWithMaximumHeightOfFour a t f r = concat $ union (renderChords' a t f r) (renderChords' a (map sharp t) f r)
+renderChordsFirstFiveFretsWithMaximumHeightOfFour a t f r = concat $ union (renderGuitarChords' a t f r) (renderGuitarChords' a (map sharp t) f r)
 
-renderChords' annotate_notes tuning chordForm chordRoot = map unlines $ intersperse ["       "] $ map Data.List.transpose $ 
-  map (\(v,b) -> renderFretBoardHorizontal chordRoot chordForm annotate_notes tuning v b) (zip (chordPositionsVertical) [0..])
-    where chordPositionsVertical = positionsVertical (chordRoot,chordForm) tuning
+renderGuitarChords' annotate_notes tuning chordForm chordRoot = map unlines $ intersperse ["       "] $ map Data.List.transpose $ 
+  map (\(v,b) -> renderFretBoard chordRoot chordForm annotate_notes tuning v b maximumPosition) (zip chordPositionsVertical [0..])
+    where chordPositionsVertical = positions (chordForm chordRoot) tuning
+          maximumPosition = maximum $ (map maximum) chordPositionsVertical
 
-renderFretBoardHorizontal chordRoot chordForm annotate_notes tuning strings iteration = map (\(pos,stringIndex) -> renderString annotate_notes maximumPosition pos iteration (tuning!!stringIndex)) (zip strings [0..])
-  where
-  maximumPosition = maximum $ (map maximum) chordPositionsVertical
-  chordPositionsVertical = positionsVertical (chordRoot,chordForm) tuning
+renderFretBoard chordRoot chordForm annotate_notes tuning strings iteration maximumPosition = 
+  map (\(pos,stringIndex) -> renderString annotate_notes maximumPosition pos iteration (tuning!!stringIndex)) (zip strings [0..])
 
 renderString annotate_notes max p iteration stringTuning = map (\i->char i p) [0..max]
   where char index pos | index == pos = fingeringChar pos
@@ -57,16 +52,13 @@ renderString annotate_notes max p iteration stringTuning = map (\i->char i p) [0
         fingeringCharUnannotated 0 = 'o'
         fingeringCharUnannotated _ = '*'
         
-positionsVertical chord tuning = map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ map (zipWith (,) (firstFourFretsVertical tuning)) (notesVertical chord tuning)
+positions chord tuning = map (map fromJust) $ map (map (uncurry (flip elemIndex))) $ map (zipWith (,) (strings tuning)) (guitarNotes chord tuning)
 
-notesVertical chord tuning = sequence $ map (filter (flip elem (extractChord chord))) (firstFourFretsVertical tuning)
+guitarNotes chord tuning = sequence $ map (filter (flip elem (extractChord chord))) (strings tuning)
 
-firstFourFretsVertical :: [Note] -> [[Note]]
-firstFourFretsVertical tuning = Data.List.transpose (firstFourFrets tuning)
+strings :: [Note] -> [[Note]]
+strings tuning = Data.List.transpose (take 4 (frets tuning))
 
-
-extractChord noteChordTuple = map snd $ degrees $ uncurry (flip ($)) $ noteChordTuple
-
-firstFourFrets tuning = take 4 (frets tuning)
+extractChord chord = map snd $ degrees chord 
 
 frets tuning = map (\n -> (map (canonize . applyNTimes sharp n) tuning)) [0..] 

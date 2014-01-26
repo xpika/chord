@@ -1,6 +1,6 @@
 module Music.Instrument.Chord
 (
- renderChords
+ renderGuitarChords
  ,
  renderChordsAnnotating
  ,
