@@ -11,3 +11,11 @@ import Data.Char
 
 
 data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
+
+abbreviateNote x = "cCdDefFgGaAb" !! fromJust (elemIndex x chromaticScale)
+    
+chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
+
+tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
+
+applyNTimes f n x = iterate f x !! n

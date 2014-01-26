@@ -4,10 +4,19 @@ import Data.List
 import Data.Maybe
 import Music.Instrument.Common
 
+import Music.Diatonic hiding (transpose)
+import Music.Diatonic.Note hiding (transpose)
+import Music.Diatonic.Degree
+import Music.Diatonic.Chord 
 
-renderPiano positions = foldl (markPiano '*') cleanPiano positions
+renderPiano positions = foldl (markPiano AnnotateMarking) cleanPiano positions
 
-markPiano marking piano position = replaceAt (getPianoPositionCharacterIndex position) marking piano
+markPiano marking piano position = replaceAt (getPianoPositionCharacterIndex position) marking' piano
+    where marking' = case marking of 
+                       AnnotateMarking -> '*'
+                       AnnotatePosition -> head (show position)
+                       AnnotateNote -> abbreviateNote $ tuningAndPosToNote C position
+    
 
 cleanPiano = map (\x -> if elem x pianoMarkings then ' ' else x ) markedPiano
 

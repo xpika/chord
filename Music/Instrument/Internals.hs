@@ -10,21 +10,13 @@ import Data.Char
 
 import Music.Instrument.Guitar
 import Music.Instrument.Piano
-
-
-data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
-
+import Music.Instrument.Common
 
 type Tuning = [Note]
 
-
-
 data Instrument = Guitar | Piano
 
-
 renderChords = renderChordsFirstFiveFretsWithMaximumHeightOfFour AnnotateMarking standardTuning
-
-
 
 levelChord = map (flip mod (12::Int))
 
@@ -34,8 +26,6 @@ rotations =  reverse . (\list -> map (\n -> (take (length list) . drop (length l
 
 sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) (12::Int)) ds
 
-
-
 renderPianoChord chordForm chordRoot = renderPiano (levelChord degrees)
     where degrees = extractDegrees (chordRoot,chordForm)
     
@@ -44,8 +34,6 @@ renderMajorChordsWithTuning tuning = renderChordsWithTuning tuning majorChord
 renderChordsWithTuning tuning = renderChordsFirstFiveFretsWithMaximumHeightOfFour  AnnotateMarking tuning
 
 renderChordsAnnotating annotation = renderChordsFirstFiveFretsWithMaximumHeightOfFour annotation standardTuning
-
-
 
 renderChordsFirstFiveFretsWithMaximumHeightOfFour :: ControlAnnotation -> [Note] -> (Note -> Chord) -> Note -> [Char]
 renderChordsFirstFiveFretsWithMaximumHeightOfFour a t f r = concat $ union (renderChords' a t f r) (renderChords' a (map sharp t) f r)
@@ -90,11 +78,7 @@ firstFourFrets tuning = take 4 (frets tuning)
 
 frets tuning = map (\n -> (map (canonize . applyNTimes sharp n) tuning)) [0..] 
 
-tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
 
-applyNTimes f n x = iterate f x !! n
 
-abbreviateNote x = "cCdDefFgGaAb" !! fromJust (elemIndex x chromaticScale)
-    
-chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
+
 degreeScale = iterate (noteMap sharp) First
