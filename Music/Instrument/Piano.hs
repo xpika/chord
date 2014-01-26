@@ -7,9 +7,12 @@ import Music.Instrument.Common
 import Music.Diatonic hiding (transpose)
 import Music.Diatonic.Note hiding (transpose)
 import Music.Diatonic.Degree
-import Music.Diatonic.Chord 
+import Music.Diatonic.Chord
 
-renderPiano positions = foldl (markPiano AnnotateMarking) cleanPiano positions
+renderPianoChord annotation chordForm chordRoot = renderPianoPositions annotation (levelChord degrees)
+    where degrees = extractDegrees (chordRoot,chordForm) 
+
+renderPianoPositions annotation positions = foldl (markPiano annotation) cleanPiano positions
 
 markPiano marking piano position = replaceAt (getPianoPositionCharacterIndex position) marking' piano
     where marking' = case marking of 

@@ -54,17 +54,17 @@ Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotatePositio
 ------
 2--2-2
 ----3-
-Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord C)
+Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotateNote majorChord C)
  ____________________ 
 | | || | | | || || | |
 | |_||_| | |_||_||_| |
-|* |  |* |  |* |  |  |
+|c |  |e |  |g |  |  |
 |__|__|__|__|__|__|__|
-Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord A)
+Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotatePosition majorChord A)
  ____________________ 
-| |*|| | | | || || | |
+| |1|| | | | || || | |
 | |_||_| | |_||_||_| |
-|  |  |* |  |  |* |  |
+|  |  |4 |  |  |9 |  |
 |__|__|__|__|__|__|__|
 
 ```

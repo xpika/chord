@@ -18,16 +18,13 @@ data Instrument = Guitar | Piano
 
 renderChords = renderChordsFirstFiveFretsWithMaximumHeightOfFour AnnotateMarking standardTuning
 
-levelChord = map (flip mod (12::Int))
+
 
 inversions = map  sequenceDegrees  . rotations 
 
 rotations =  reverse . (\list -> map (\n -> (take (length list) . drop (length list -n)) (cycle list)) [1..length list] )
 
 sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) (12::Int)) ds
-
-renderPianoChord chordForm chordRoot = renderPiano (levelChord degrees)
-    where degrees = extractDegrees (chordRoot,chordForm)
     
 renderMajorChordsWithTuning tuning = renderChordsWithTuning tuning majorChord 
 
@@ -37,8 +34,6 @@ renderChordsAnnotating annotation = renderChordsFirstFiveFretsWithMaximumHeightO
 
 renderChordsFirstFiveFretsWithMaximumHeightOfFour :: ControlAnnotation -> [Note] -> (Note -> Chord) -> Note -> [Char]
 renderChordsFirstFiveFretsWithMaximumHeightOfFour a t f r = concat $ union (renderChords' a t f r) (renderChords' a (map sharp t) f r)
-
-noteToChromaticIndex note = fromJust (findIndex (flip equiv note) chromaticScale)
 
 renderChords' annotate_notes tuning chordForm chordRoot = map unlines $ intersperse ["       "] $ map Data.List.transpose $ 
   map (\(v,b) -> renderFretBoardHorizontal chordRoot chordForm annotate_notes tuning v b) (zip (chordPositionsVertical) [0..])
@@ -69,16 +64,9 @@ notesVertical chord tuning = sequence $ map (filter (flip elem (extractChord cho
 firstFourFretsVertical :: [Note] -> [[Note]]
 firstFourFretsVertical tuning = Data.List.transpose (firstFourFrets tuning)
 
-extractDegrees noteChordTuple = map (+ (noteToChromaticIndex (fst noteChordTuple))) $ map degreeToChromaticIndex  $ map fst $ degrees $ (snd noteChordTuple) (fst noteChordTuple)
-extractChord noteChordTuple = map snd $ (\(x,y)-> degrees (y x)) noteChordTuple
 
-degreeToChromaticIndex degree = fromJust (findIndex (flip equiv degree) degreeScale)
+extractChord noteChordTuple = map snd $ degrees $ uncurry (flip ($)) $ noteChordTuple
 
 firstFourFrets tuning = take 4 (frets tuning)
 
 frets tuning = map (\n -> (map (canonize . applyNTimes sharp n) tuning)) [0..] 
-
-
-
-
-degreeScale = iterate (noteMap sharp) First
