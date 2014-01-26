@@ -19,7 +19,7 @@ expressions = [
  ,"renderChordsAnnotating AnnotateNote majorChord G"
  ,"renderChordsAnnotating AnnotatePosition majorChord D"
  ,"renderPianoChord majorChord C"
- ,"renderPianoChord majorChord E"
+ ,"renderPianoChord majorChord A"
  ]
 
  

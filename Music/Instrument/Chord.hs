@@ -44,17 +44,18 @@ data Instrument = Guitar | Piano
 
 rotations =  reverse . (\list -> map (\n -> (take (length list) . drop (length list -n)) (cycle list)) [1..length list] )
 
-inversions chordTuple = map  sequenceDegrees  $ rotations $ extractDegrees chordTuple
+levelChord = map (flip mod (12::Int))
 
-sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) 12) ds
+inversions = map  sequenceDegrees  . rotations 
+
+sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) (12::Int)) ds
 
 noteToChromaticIndex note =   fromJust (findIndex (flip equiv note) chromaticScale)
 
 degreeToChromaticIndex degree  =   fromJust (findIndex (flip equiv degree) degreeScale')
 
-renderPianoChord chordForm chordRoot = renderPiano (degrees)
+renderPianoChord chordForm chordRoot = renderPiano (levelChord degrees)
     where degrees = extractDegrees (chordRoot,chordForm)
-
 
 renderMajorChordsWithTuning tuning = renderChordsWithTuning tuning majorChord 
 

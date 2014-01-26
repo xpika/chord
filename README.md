@@ -60,11 +60,11 @@ Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord C)
  | |_||_| | |_||_||_| |
  |* |  |* |  |* |  |  |
  |__|__|__|__|__|__|__|
-Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord E)
+Prelude Music.Instrument.Chord> putStrLn (renderPianoChord majorChord A)
   ____________________ 
- | | || | | | ||*|| | |
+ | |*|| | | | || || | |
  | |_||_| | |_||_||_| |
- |  |  |* |  |  |  |* |
+ |  |  |* |  |  |* |  |
  |__|__|__|__|__|__|__|
 
 ```
