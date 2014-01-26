@@ -18,12 +18,17 @@ module Music.Instrument.Chord
  ControlAnnotation(..)
  ,
  renderPianoChord
+ ,
+ module Music.Diatonic.Note
+ ,
+ module Music.Diatonic.Degree
 )
 where
 
-import Music.Diatonic 
-import Music.Diatonic.Chord
+import Music.Diatonic
 import Music.Diatonic.Note
+import Music.Diatonic.Degree
+import Music.Diatonic.Chord
 import Data.List
 import Data.Maybe
 import Data.Char
@@ -37,10 +42,19 @@ data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
 
 data Instrument = Guitar | Piano
 
-renderPianoChord :: Deg s Note => (a -> s) -> a -> [Char]
-renderPianoChord chordForm chordRoot = renderPiano (map noteToChromaticIndex notes)
-    where notes = extractChord (chordRoot,chordForm)
-          noteToChromaticIndex note = fromJust (elemIndex note chromaticScale)
+rotations =  reverse . (\list -> map (\n -> (take (length list) . drop (length list -n)) (cycle list)) [1..length list] )
+
+inversions chordTuple = map  sequenceDegrees  $ rotations $ extractDegrees chordTuple
+
+sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) 12) ds
+
+noteToChromaticIndex note =   fromJust (findIndex (flip equiv note) chromaticScale)
+
+degreeToChromaticIndex degree  =   fromJust (findIndex (flip equiv degree) degreeScale')
+
+renderPianoChord chordForm chordRoot = renderPiano (degrees)
+    where degrees = extractDegrees (chordRoot,chordForm)
+
 
 renderMajorChordsWithTuning tuning = renderChordsWithTuning tuning majorChord 
 
@@ -87,7 +101,9 @@ notesVertical chord tuning = sequence $ map (filter (flip elem (extractChord cho
 firstFourFretsVertical :: [Note] -> [[Note]]
 firstFourFretsVertical tuning = Data.List.transpose (firstFourFrets tuning)
 
+extractDegrees noteChordTuple = map (+ (noteToChromaticIndex (fst noteChordTuple))) $ map degreeToChromaticIndex  $ map fst $ degrees $ (snd noteChordTuple) (fst noteChordTuple)
 extractChord noteChordTuple = map snd $ degrees $ (snd noteChordTuple) (fst noteChordTuple)
+
 firstFourFrets tuning = take 4 (frets tuning)
 
 frets :: [Note] -> [[Note]]
@@ -99,25 +115,25 @@ standardTuning = [E,A,D,G,B,E]
 
 tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
 
-abbreviateNote x = "cCdDefFgGaAb" !! n 
-    where (Just n) = elemIndex x chromaticScale
-
-chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
-
 replaceAt i v xs = map (\(x,i') -> if i==i' then v else x) $  zip xs [0..]
    
 renderPiano positions = foldl (markPiano '*') cleanPiano positions
   
 markPiano marking piano position   = replaceAt (getPianoPositionCharacterIndex position) marking piano
 
-
 cleanPiano = map (\x -> if elem x pianoMarkings then ' ' else x ) markedPiano
-          
             
 getPianoPositionCharacterIndex pos = i
     where (Just i) = elemIndex (pianoMarkings !! pos) markedPiano
 
 pianoMarkings = ['a'..'l']
+
+abbreviateNote x = "cCdDefFgGaAb" !! n 
+    where (Just n) = elemIndex x chromaticScale
+    
+chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
+degreeScale = [First,Second,Third,Fourth,Fifth,Sixth,Seventh]
+degreeScale' = iterate (noteMap sharp) First
 
 markedPiano = unlines
         [
