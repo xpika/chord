@@ -35,11 +35,6 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dro
 ----**
 ---*--
 ***---
-
-----**
----*--
-***---
-------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateNote standardTuning majorChord G)
 ==DGB=
 ------

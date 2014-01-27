@@ -15,12 +15,15 @@ import Music.Instrument.Common
 renderGuitarChords :: ControlAnnotation -> [Note] -> (Note -> Chord) -> Note -> [Char]
 renderGuitarChords controlAnnotation tuning form root = 
     concat $ intersperse "\n" $ union 
-        (renderPositionPatterns controlAnnotation tuning form root 0 4)
-            (renderPositionPatterns controlAnnotation tuning form root 1 4)
+        (renderPositionPatterns controlAnnotation tuning 0 4 p1)
+            (renderPositionPatterns controlAnnotation tuning 1 4 p2')
+    where 
+    p2' = p2 \\ p1
+    p1 = positionPatterns (form root) tuning 0 4
+    p2 = positionPatterns (form root) tuning 1 4
 
-renderPositionPatterns controlAnnotation tuning chordForm chordRoot from count = 
-  map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern from (count-1))
-    (positionPatterns (chordForm chordRoot) tuning from count)
+renderPositionPatterns controlAnnotation tuning from count positionPatterns' = 
+  map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern from (count-1)) positionPatterns'
 
 renderPositionPattern controlAnnotation tuning positionPattern from maximumPosition = unlines $ Data.List.transpose $
   map (\(pos,stringIndex) -> renderString controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
