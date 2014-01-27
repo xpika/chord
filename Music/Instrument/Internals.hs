@@ -14,15 +14,15 @@ import Music.Instrument.Guitar
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-renderGuitarChords :: ControlAnnotation -> [[Note]] -> Chord -> [Char]
+renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
 renderGuitarChords controlAnnotation tuning chord =
     concat $ intersperse "\n" $ union 
-        (renderVerticalyConstrainedPositionPatterns controlAnnotation (tuning!!0) 0 4 p1)
-            (renderVerticalyConstrainedPositionPatterns controlAnnotation (tuning!!0) 1 4 p2')
+        (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1)
+            (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2')
     where 
     p2' = p2 \\ p1
-    p1 = positionPatterns chord (tuning!!0) 0 4
-    p2 = positionPatterns chord (tuning!!0) 1 4
+    p1 = positionPatterns chord tuning 0 4
+    p2 = positionPatterns chord tuning 1 4
         
 
 renderVerticalyConstrainedPositionPatterns controlAnnotation tuning from count positionPatterns' = 
