@@ -15,16 +15,11 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning (majorChord B))
---*---
-**---*
-------
----**-
-
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning (minorChord B))
 ------
 **---*
-------
---***-
+----*-
+--**--
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dropD (majorChord F))
 =o====
 ----**

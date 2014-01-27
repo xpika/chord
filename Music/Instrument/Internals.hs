@@ -17,12 +17,10 @@ import Music.Instrument.Common
 renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
 renderGuitarChords controlAnnotation tuning chord =
     concat $ intersperse "\n" $ union 
-        (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1)
+        (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1')
             (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2')
     where 
-    p2' = p2 \\ p1
-    p1 = positionPatterns chord tuning 0 4
-    p2 = positionPatterns chord tuning 1 4
+    [p1',p2'] = take 2 $ positionPatterns chord tuning 4
         
 
 renderVerticalyConstrainedPositionPatterns controlAnnotation tuning from count positionPatterns' = 
@@ -44,7 +42,12 @@ renderGuitarString controlAnnotation from max positionIndex stringTuning = map (
         fingeringCharUnannotated 0 = 'o'
         fingeringCharUnannotated _ = '*'
         
-positionPatterns chord tuning from count = 
+positionPatterns chord tuning count = positionPatterns' chord tuning [1..] count
+        
+positionPatterns' chord tuning froms count = 
+  scanl1 (flip (\\)) ( map (\x-> positionPatterns'' chord tuning x 4) froms)
+        
+positionPatterns'' chord tuning from count = 
   map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
 
 notePatterns chord tuning from count = 
