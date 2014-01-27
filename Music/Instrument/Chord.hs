@@ -2,13 +2,9 @@ module Music.Instrument.Chord
 (
  renderGuitarChords
  ,
- renderChordsAnnotating
- ,
  standardTuning
  ,
  dropD
- , 
- renderMajorChordsWithTuning
  ,
  ControlAnnotation (..)
  ,

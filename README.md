@@ -15,41 +15,42 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords majorChord B)
-==o===
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning majorChord B)
+--*---
 **---*
 ------
 ---**-
-       
-======
+
+------
 **---*
 ------
 --***-
-
-Prelude Music.Instrument.Chord> putStrLn (renderMajorChordsWithTuning dropD F)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dropD majorChord F)
 =o====
 ----**
 ---*--
 *-*---
-       
+
 ======
 ----**
 ---*--
 ***---
-====oo
+
+----**
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotateNote majorChord G)
-==dgb=
 ------
--b----
-g----g
-       
-==dg==
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateNote standardTuning majorChord G)
+==DGB=
 ------
--b----
-g---dg
-Prelude Music.Instrument.Chord> putStrLn (renderChordsAnnotating AnnotatePosition majorChord D)
+-B----
+G----G
+
+==DG==
+------
+-B----
+G---DG
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePosition standardTuning majorChord D)
 =00===
 ------
 2--2-2
@@ -58,7 +59,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotateNote majorCho
  ____________________ 
 | | || | | | || || | |
 | |_||_| | |_||_||_| |
-|c |  |e |  |g |  |  |
+|C |  |E |  |G |  |  |
 |__|__|__|__|__|__|__|
 Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotatePosition majorChord A)
  ____________________ 
