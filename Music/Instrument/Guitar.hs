@@ -11,3 +11,5 @@ import Music.Diatonic.Chord
 dropD = [D,A,D,G,B,E]
 
 standardTuning = [E,A,D,G,B,E]
+
+ukelele = [C,E,G,A]
