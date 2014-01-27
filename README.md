@@ -15,7 +15,7 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning majorChord B)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning (majorChord B))
 --*---
 **---*
 ------
@@ -25,7 +25,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking sta
 **---*
 ------
 --***-
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dropD majorChord F)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dropD (majorChord F))
 =o====
 ----**
 ---*--
@@ -35,7 +35,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dro
 ----**
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateNote standardTuning majorChord G)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateNote standardTuning (majorChord G))
 ==DGB=
 ------
 -B----
@@ -45,7 +45,7 @@ G----G
 ------
 -B----
 G---DG
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePosition standardTuning majorChord D)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePosition standardTuning (majorChord D))
 =00===
 ------
 2--2-2

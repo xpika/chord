@@ -10,7 +10,7 @@ import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 
 renderPianoChord annotation chordForm chordRoot = renderPianoPositions annotation (levelChord degrees)
-    where degrees = extractDegrees (chordRoot,chordForm) 
+    where degrees = extractDegrees chord
 
 renderPianoPositions annotation positions = foldl (markPiano annotation) cleanPiano positions
 

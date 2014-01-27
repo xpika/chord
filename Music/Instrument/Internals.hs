@@ -12,15 +12,15 @@ import Music.Instrument.Guitar
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-renderGuitarChords :: ControlAnnotation -> [Note] -> (Note -> Chord) -> Note -> [Char]
-renderGuitarChords controlAnnotation tuning form root = 
+renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
+renderGuitarChords controlAnnotation tuning chord =
     concat $ intersperse "\n" $ union 
         (renderPositionPatterns controlAnnotation tuning 0 4 p1)
             (renderPositionPatterns controlAnnotation tuning 1 4 p2')
     where 
     p2' = p2 \\ p1
-    p1 = positionPatterns (form root) tuning 0 4
-    p2 = positionPatterns (form root) tuning 1 4
+    p1 = positionPatterns chord tuning 0 4
+    p2 = positionPatterns chord tuning 1 4
 
 renderPositionPatterns controlAnnotation tuning from count positionPatterns' = 
   map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern from (count-1)) positionPatterns'
@@ -41,8 +41,11 @@ renderString controlAnnotation from max positionIndex stringTuning = map (\i->ch
         fingeringCharUnannotated 0 = 'o'
         fingeringCharUnannotated _ = '*'
         
-positionPatterns chord tuning from count =  map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (strings tuning from count)) (notePatterns chord tuning from count)
-notePatterns chord tuning from count = sequence $ map (filter (flip elem (extractChord chord))) (strings tuning from count)
+positionPatterns chord tuning from count = 
+  map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (strings tuning from count)) (notePatterns chord tuning from count)
+
+notePatterns chord tuning from count = 
+  sequence $ map (filter (flip elem (extractChord chord))) (strings tuning from count)
 
 strings tuning from count = Data.List.transpose ( (take count . drop from)  $ frets tuning)
 
