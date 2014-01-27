@@ -20,7 +20,7 @@ applyNTimes f n x = iterate f x !! n
 
 noteToChromaticIndex note = fromJust (findIndex (flip equiv note) chromaticScale)
 
-extractDegrees chord = map (+ (noteToChromaticIndex (root cord))) $ map degreeToChromaticIndex  $ map fst $ degrees $ chord
+extractDegrees chord = map (+ (noteToChromaticIndex (root chord))) $ map degreeToChromaticIndex  $ map fst $ degrees $ chord
 
 degreeToChromaticIndex degree = fromJust (findIndex (flip equiv degree) degreeScale)
 

@@ -7,10 +7,13 @@ import Music.Diatonic.Chord
 import Data.List
 import Data.Maybe
 import Data.Char
+import Control.Monad
+import qualified Data.Set
 
 import Music.Instrument.Guitar
 import Music.Instrument.Piano
 import Music.Instrument.Common
+
 
 renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
 renderGuitarChords controlAnnotation tuning chord =
@@ -42,13 +45,28 @@ renderString controlAnnotation from max positionIndex stringTuning = map (\i->ch
         fingeringCharUnannotated _ = '*'
         
 positionPatterns chord tuning from count = 
-  map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (strings tuning from count)) (notePatterns chord tuning from count)
+  map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
 
 notePatterns chord tuning from count = 
-  sequence $ map (filter (flip elem (extractChord chord))) (strings tuning from count)
+  sequence $ map (filter (flip elem (chordNotes chord))) (frettedGuitarStringsLengths from count tuning)
 
-strings tuning from count = Data.List.transpose ( (take count . drop from)  $ frets tuning)
+frettedGuitarStringsLengths from count = map (take count . drop from) . frettedGuitarStrings
+frettedGuitarStrings tuning = map fret tuning
+fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
 
-frets tuning = map (\n -> (map (canonize . applyNTimes sharp n) tuning)) [0..]
+positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
+tuneAndPositionToNote tune position =  fret tune !! position
 
-extractChord chord = map snd $ degrees chord
+chordNotes chord = map snd $ degrees chord
+
+findChord inputNotes = do 
+  chordType <- chordTypes
+  root <- chromaticScale
+  let notes = chordNotes (chordType root)
+  guard (Data.Set.isSubsetOf (Data.Set.fromList (uns inputNotes )) (Data.Set.fromList notes))
+  return (chordType root) 
+  where uns = map canonize
+
+chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
+              major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
+

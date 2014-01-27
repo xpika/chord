@@ -9,7 +9,7 @@ import Music.Diatonic.Note hiding (transpose)
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 
-renderPianoChord annotation chordForm chordRoot = renderPianoPositions annotation (levelChord degrees)
+renderPianoChord annotation chord = renderPianoPositions annotation (levelChord degrees)
     where degrees = extractDegrees chord
 
 renderPianoPositions annotation positions = foldl (markPiano annotation) cleanPiano positions
