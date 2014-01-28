@@ -4,7 +4,7 @@
 name:                instrument-chord
 version:             0.1.0.5
 synopsis:            Render Instrument Chords
-description:         Library which Pretty Prints Guitar Chords
+description:         Library to generate musical instrument configurations
 homepage:            https://github.com/xpika/chord
 license:             GPL-3
 license-file:        LICENSE
