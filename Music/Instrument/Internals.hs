@@ -16,11 +16,11 @@ import Music.Instrument.Common
 
 renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
 renderGuitarChords controlAnnotation tuning chord =
-    concat $ intersperse "\n" $ union 
-        (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1')
-            (renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2')
+    concat $ intersperse "\n" $ 
+           renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1 
+        ++ renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2 
     where 
-    [p1',p2'] = take 2 $ positionPatterns chord tuning 4
+    [p1,p2] = take 2 $ positionPatterns chord tuning 4
         
 
 renderVerticalyConstrainedPositionPatterns controlAnnotation tuning from count positionPatterns' = 
@@ -42,16 +42,16 @@ renderGuitarString controlAnnotation from max positionIndex stringTuning = map (
         fingeringCharUnannotated 0 = 'o'
         fingeringCharUnannotated _ = '*'
         
-positionPatterns chord tuning count = positionPatterns' chord tuning [1..] count
+positionPatterns chord tuning count = positionPatterns' chord tuning [0..] count
         
 positionPatterns' chord tuning froms count = 
-  scanl1 (flip (\\)) ( map (\x-> positionPatterns'' chord tuning x 4) froms)
+  scanl1 (flip (\\)) ( map (\x-> positionPatterns'' chord tuning x count) froms)
         
 positionPatterns'' chord tuning from count = 
   map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
 
 notePatterns chord tuning from count = 
-  sequence $ map (filter (flip elem (chordNotes chord))) (frettedGuitarStringsLengths from count tuning)
+  sequence $ map (filter (flip elem (chordToNotes chord))) (frettedGuitarStringsLengths from count tuning)
 
 frettedGuitarStringsLengths from count = map (take count . drop from) . frettedGuitarStrings
 frettedGuitarStrings tuning = map fret tuning
@@ -60,12 +60,12 @@ fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
 positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
 tuneAndPositionToNote tune position =  fret tune !! position
 
-chordNotes chord = map snd $ degrees chord
+chordToNotes chord = map snd $ degrees chord
 
 findChord inputNotes = do 
   chordType <- chordTypes
   root <- chromaticScale
-  let notes = chordNotes (chordType root)
+  let notes = chordToNotes (chordType root)
   guard (Data.Set.isSubsetOf (Data.Set.fromList (uns inputNotes )) (Data.Set.fromList notes))
   return (chordType root) 
   where uns = map canonize
