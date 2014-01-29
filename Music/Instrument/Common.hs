@@ -48,3 +48,5 @@ chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
               major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
 
 chordToNotes chord = map snd $ degrees chord
+
+

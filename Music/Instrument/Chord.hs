@@ -19,6 +19,8 @@ module Music.Instrument.Chord
  module Music.Diatonic.Chord
  ,
  ukelele
+ ,
+ positionPatterns
 )
 where
 
