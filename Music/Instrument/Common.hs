@@ -4,9 +4,11 @@ import Music.Diatonic
 import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
+import Control.Monad
 import Data.List
 import Data.Maybe
 import Data.Char
+import qualified Data.Set
 
 data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
 
@@ -33,3 +35,16 @@ inversions = map sequenceDegrees . rotations
 rotations = reverse . (\list -> map (\n -> (take (length list) . drop (length list -n)) (cycle list)) [1..length list])
 
 sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) (12::Int)) ds
+
+findChord inputNotes = do 
+  chordType <- chordTypes
+  root <- chromaticScale
+  let notes = chordToNotes (chordType root)
+  guard (Data.Set.isSubsetOf (Data.Set.fromList (uns inputNotes )) (Data.Set.fromList notes))
+  return (chordType root) 
+  where uns = map canonize
+
+chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
+              major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
+
+chordToNotes chord = map snd $ degrees chord
