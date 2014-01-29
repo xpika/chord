@@ -18,7 +18,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Music.Instrument.Chord
-  -- other-modules:       
+  other-modules:       Music.Instrument.Common ,Music.Instrument.Guitar ,Music.Instrument.Piano , Music.Instrument.GuitarRender
   -- other-extensions:    
   build-depends:       base > 0 && < 10000 , music-diatonic >= 0.1.1, containers > 0 && < 10000
   -- hs-source-dirs:      
