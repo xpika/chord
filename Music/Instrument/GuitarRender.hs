@@ -11,7 +11,6 @@ import Control.Monad
 import qualified Data.Set
 
 import Music.Instrument.Guitar
-import Music.Instrument.Internals
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
@@ -23,7 +22,6 @@ renderGuitarChords controlAnnotation tuning chord =
         ++ renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2 
     where 
     [p1,p2] = take 2 $ positionPatterns chord tuning 4
-        
 
 renderVerticalyConstrainedPositionPatterns controlAnnotation tuning from count positionPatterns' = 
   map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern from (count-1)) positionPatterns'

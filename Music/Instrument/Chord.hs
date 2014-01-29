@@ -24,7 +24,6 @@ module Music.Instrument.Chord
 )
 where
 
-import Music.Instrument.Internals
 import Music.Instrument.Guitar
 import Music.Instrument.GuitarRender
 import Music.Instrument.Piano
