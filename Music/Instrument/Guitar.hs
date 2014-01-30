@@ -23,7 +23,7 @@ findPositionPatterns'' chord tuning from count =
   map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
 
 notePatterns chord tuning from count = 
-  sequence $ map (filter (flip elem (chordToNotes chord))) (frettedGuitarStringsLengths from count tuning)
+  mapM (filter (flip elem (chordToNotes chord))) (frettedGuitarStringsLengths from count tuning)
 
 frettedGuitarStringsLengths from count = map (take count . drop from) . frettedGuitarStrings
 frettedGuitarStrings tuning = map fret tuning
