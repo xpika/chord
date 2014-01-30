@@ -33,7 +33,7 @@ fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
 positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
 tuneAndPositionToNote tune position =  fret tune !! position
 
-getPoisitionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
+getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 
 getPositionPatternMin = minimum . map minimum 
 getPositionPatternMax = maximum . map maximum

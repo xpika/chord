@@ -21,6 +21,8 @@ module Music.Instrument.Chord
  ukelele
  ,
  findPositionPatterns
+ ,
+ getPositionPatternRange
 )
 where
 

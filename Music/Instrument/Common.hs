@@ -10,7 +10,7 @@ import Data.Maybe
 import Data.Char
 import qualified Data.Set
 
-data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking
+data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking 
 
 abbreviateNote x = "CdDeEFgGaAbB" !! fromJust (elemIndex x chromaticScale)
     
@@ -48,3 +48,5 @@ chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
               major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
 
 chordToNotes chord = map snd $ degrees chord
+
+maxPatternHeight = 4 ::Int
