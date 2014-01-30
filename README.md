@@ -16,10 +16,11 @@ $ghci
 
 Prelude>:m + Music.Instrument.Chord 
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking standardTuning (minorChord B))
-------
+Fret: 2
 **---*
 ----*-
 --**--
+------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotateMarking dropD (majorChord F))
 =o====
 ----**

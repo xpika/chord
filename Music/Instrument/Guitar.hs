@@ -1,4 +1,5 @@
-module Music.Instrument.Guitar where 
+{-# LANGUAGE NoMonomorphismRestriction #-}
+module Music.Instrument.Guitar where
 
 import Music.Diatonic
 import Music.Diatonic.Note
@@ -13,22 +14,12 @@ import qualified Data.Set
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-dropD = [D,A,D,G,B,E]
-
-standardTuning = [E,A,D,G,B,E]
-
-ukelele = [C,E,G,A]
-
-positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
-tuneAndPositionToNote tune position =  fret tune !! position
-
+findPositionPatterns chord tuning count = filter ( not . null  ) $ findPositionPatterns' chord tuning count
         
-positionPatterns chord tuning count = positionPatterns' chord tuning [0..] count
+findPositionPatterns' chord tuning count =
+  scanl1 (flip (\\)) ( map (\x-> findPositionPatterns'' chord tuning x count) [0..])
         
-positionPatterns' chord tuning froms count = 
-  scanl1 (flip (\\)) ( map (\x-> positionPatterns'' chord tuning x count) froms)
-        
-positionPatterns'' chord tuning from count = 
+findPositionPatterns'' chord tuning from count = 
   map ( map ( (+from) . fromJust) . map (uncurry (flip elemIndex))) $ map (zipWith (,) (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
 
 notePatterns chord tuning from count = 
@@ -39,4 +30,17 @@ frettedGuitarStrings tuning = map fret tuning
 fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
 
 
+positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
+tuneAndPositionToNote tune position =  fret tune !! position
 
+getPoisitionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
+
+getPositionPatternMin = minimum . map minimum 
+getPositionPatternMax = maximum . map maximum
+
+
+dropD = [D,A,D,G,B,E]
+
+standardTuning = [E,A,D,G,B,E]
+
+ukelele = [C,E,G,A]

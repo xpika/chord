@@ -20,7 +20,7 @@ module Music.Instrument.Chord
  ,
  ukelele
  ,
- positionPatterns
+ findPositionPatterns
 )
 where
 

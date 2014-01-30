@@ -1,4 +1,4 @@
-module Music.Instrument.GuitarRender where 
+module Music.Instrument.GuitarRender where
 
 import Music.Diatonic
 import Music.Diatonic.Note
@@ -14,17 +14,17 @@ import Music.Instrument.Guitar
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-
 renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
 renderGuitarChords controlAnnotation tuning chord =
-    concat $ intersperse "\n" $ 
-           renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 p1 
-        ++ renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 1 4 p2 
+    (if minPosition /= 0 then "Fret: " ++ show minPosition ++ "\n" else "") ++ (concat $ intersperse "\n" $ 
+        renderVerticalyConstrainedPositionPatterns controlAnnotation tuning 0 4 positionPatterns )
     where 
-    [p1,p2] = take 2 $ positionPatterns chord tuning 4
-
+    positionPatterns = head $ take 1 $ filter (not . null) $ findPositionPatterns chord tuning 4
+    (minPosition,_) =  getPoisitionPatternRange positionPatterns
+    
 renderVerticalyConstrainedPositionPatterns controlAnnotation tuning from count positionPatterns' = 
-  map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern from (count-1)) positionPatterns'
+  map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern minPosition (count-1)) positionPatterns'
+  where (minPosition,_) = getPoisitionPatternRange positionPatterns'
 
 renderPositionPattern controlAnnotation tuning positionPattern from maximumPosition = unlines $ Data.List.transpose $
   map (\(pos,stringIndex) -> renderGuitarString controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
