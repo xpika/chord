@@ -14,10 +14,10 @@ getExpressionAndLine string = (makeGhciLine string , head $ rights [parseExp str
 makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
 
 expressions = [
-  "renderGuitarChords AnnotateMarking standardTuning (minorChord B)"
- ,"renderGuitarChords AnnotateMarking dropD (majorChord F)"
- ,"renderGuitarChords AnnotateNote standardTuning (majorChord G)"
- ,"renderGuitarChords AnnotatePosition ukelele (majorChord C)"
+  "renderGuitarChords AnnotateMarking standardTuning (minorChord B) 4"
+ ,"renderGuitarChords AnnotateMarking dropD (majorChord F) 4"
+ ,"renderGuitarChords AnnotateNote standardTuning (majorChord G) 4"
+ ,"renderGuitarChords AnnotatePosition ukelele (majorChord C) 4"
  ,"renderPianoChord AnnotateNote (majorChord C)"
  ,"renderPianoChord AnnotatePosition (majorChord A)"
  ]

@@ -14,12 +14,12 @@ import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternRange)
 import Music.Instrument.Piano
 import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,maxPatternHeight,abbreviateNote)
 
-renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> [Char]
-renderGuitarChords controlAnnotation tuning chord =
+renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> Int -> [Char]
+renderGuitarChords controlAnnotation tuning chord maxHeight =
     (if minPosition /= 0 then "Fret: " ++ show minPosition ++ "\n" else "") ++ (concat $ intersperse "\n" $ 
-        renderPositionPatternsRange controlAnnotation tuning maxPatternHeight positionPatterns )
+        renderPositionPatternsRange controlAnnotation tuning maxHeight positionPatterns )
     where 
-    positionPatterns = head $ take 1 $ filter (not . null) $ findPositionPatterns chord tuning maxPatternHeight
+    positionPatterns = head $ take 1 $ filter (not . null) $ findPositionPatterns chord tuning maxHeight
     (minPosition,_) =  getPositionPatternRange positionPatterns
     
 renderPositionPatternsRange controlAnnotation tuning count positionPatterns' = 
