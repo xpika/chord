@@ -10,36 +10,45 @@ import Data.Char
 import Control.Monad
 import qualified Data.Set
 
-import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternRange)
+import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin)
 import Music.Instrument.Piano
-import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,maxPatternHeight,abbreviateNote)
+import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,maxPatternHeight,abbreviateNote,horizontalConcat)
 
-renderGuitarChords :: ControlAnnotation -> [Note] -> Chord -> Int -> [Char]
-renderGuitarChords controlAnnotation tuning chord maxHeight =
+
+renderGuitarChords :: ControlAnnotation -> Bool -> [Note] -> Chord -> Int -> [Char]
+renderGuitarChords controlAnnotation orientationVertical tuning chord maxHeight =
     (if minPosition /= 0 then "Fret: " ++ show minPosition ++ "\n" else "") ++ (concat $ intersperse "\n" $ 
-        renderPositionPatternsRange controlAnnotation tuning maxHeight positionPatterns )
+        (renderPositionPatternsRange orientationVertical controlAnnotation tuning maxHeight positionPatterns) )
     where 
     positionPatterns = head $ take 1 $ filter (not . null) $ findPositionPatterns chord tuning maxHeight
-    (minPosition,_) =  getPositionPatternRange positionPatterns
+    minPosition = getPositionPatternMin positionPatterns
     
-renderPositionPatternsRange controlAnnotation tuning count positionPatterns' = 
-  map (\positionPattern -> renderPositionPattern controlAnnotation tuning positionPattern minPosition (count-1)) positionPatterns'
-  where (minPosition,_) = getPositionPatternRange positionPatterns'
+renderPositionPatternsRange orientationVertical controlAnnotation tuning count positionPatterns' = 
+  map ( renderPositionPattern orientationVertical controlAnnotation tuning minPosition (count-1)) positionPatterns'
+  where minPosition = getPositionPatternMin positionPatterns'
 
-renderPositionPattern controlAnnotation tuning positionPattern from maximumPosition = unlines $ Data.List.transpose $
-  map (\(pos,stringIndex) -> renderGuitarString controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
+renderPositionPattern orientationVertical controlAnnotation tuning from maximumPosition positionPattern = (if orientationVertical then foldl1 horizontalConcat else unlines . reverse ) $
+  map (\(pos,stringIndex) -> renderGuitarString orientationVertical controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
 
-renderGuitarString controlAnnotation from max positionIndex stringTuning = map (\i->char i) [from..(from + max)]
-  where char index | index == positionIndex = fingeringChar stringTuning positionIndex controlAnnotation
-                   | otherwise = fretChar index
+renderGuitarString orientationVertical controlAnnotation from max positionIndex stringTuning = 
+     (if orientationVertical then intersperse '\n' else id )
+        (map (char orientationVertical stringTuning positionIndex controlAnnotation) [from..(from + max)])
+
+char orientationVertical stringTuning positionIndex controlAnnotation index | index == positionIndex = fingeringChar stringTuning positionIndex controlAnnotation
+                                                                            | otherwise = fretChar orientationVertical index
 
 fingeringChar stringTuning positionIndex controlAnnotation = case controlAnnotation of 
     AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
     AnnotateMarking -> fingeringCharUnannotated positionIndex
     AnnotatePosition -> head (show positionIndex)
 
-fretChar 0 = '='
-fretChar _ = '-'
+fretChar orientationVertical 0 | orientationVertical = '='
+                               | otherwise = '-'
+                               
+fretChar orientationVertical _ | orientationVertical = '-'
+                               | otherwise = '-'
 
 fingeringCharUnannotated 0 = 'o'
 fingeringCharUnannotated _ = '*'
+
+rotateText =  unlines . Data.List.transpose . lines

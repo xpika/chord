@@ -50,3 +50,6 @@ chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
 chordToNotes chord = map snd $ degrees chord
 
 maxPatternHeight = 4 ::Int
+
+
+horizontalConcat str1 str2 = (unlines) $ zipWith (++) (lines str1) (lines str2)
