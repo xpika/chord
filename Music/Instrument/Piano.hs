@@ -17,7 +17,8 @@ renderPianoPositions annotation positions = foldl (markPiano annotation) cleanPi
 markPiano marking piano position = replaceAt (getPianoPositionCharacterIndex position) marking' piano
     where marking' = case marking of 
                        AnnotateMarking -> '*'
-                       AnnotatePosition -> head (show position)
+                       AnnotatePositionHorizontal -> head (show position)
+                       AnnotatePositionVertical -> '1'
                        AnnotateNote -> abbreviateNote $ tuningAndPosToNote C position
     
 

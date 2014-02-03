@@ -43,7 +43,7 @@ G----G
 ------
 -B----
 G---DG
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePosition True ukelele (majorChord C) 4)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChords AnnotatePositionVertical True ukelele (majorChord C) 4)
 000=
 ----
 ----
@@ -59,7 +59,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotateNote (majorCh
 | |_||_| | |_||_||_| |
 |C |  |E |  |G |  |  |
 |__|__|__|__|__|__|__|
-Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotatePosition (majorChord A))
+Prelude Music.Instrument.Chord> putStrLn (renderPianoChord AnnotatePositionHorizontal (majorChord A))
  ____________________ 
 | |1|| | | | || || | |
 | |_||_| | |_||_||_| |

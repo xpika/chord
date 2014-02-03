@@ -28,22 +28,24 @@ renderPositionPatternsRange orientationVertical controlAnnotation tuning count p
   where minPosition = getPositionPatternMin positionPatterns'
 
 renderPositionPattern orientationVertical controlAnnotation tuning from maximumPosition positionPattern = (if orientationVertical then foldl1 horizontalConcat else unlines . reverse ) $
-  map (\(pos,stringIndex) -> renderGuitarString orientationVertical controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
+  map (\(pos,stringIndex) -> renderGuitarString stringIndex orientationVertical controlAnnotation from maximumPosition pos (tuning!!stringIndex)) (zip positionPattern [0..])
 
-renderGuitarString orientationVertical controlAnnotation from max positionIndex stringTuning = 
+renderGuitarString stringIndex orientationVertical controlAnnotation from max positionIndex stringTuning = 
      (if orientationVertical then intersperse '\n' else id )
-        (map (char orientationVertical stringTuning positionIndex controlAnnotation) [from..(from + max)])
+        (map (char stringIndex orientationVertical stringTuning positionIndex controlAnnotation) [from..(from + max)])
 
-char orientationVertical stringTuning positionIndex controlAnnotation index | index == positionIndex = fingeringChar stringTuning positionIndex controlAnnotation
-                                                                            | otherwise = fretChar orientationVertical index
+char stringIndex orientationVertical stringTuning positionIndex controlAnnotation index 
+  | index == positionIndex = fingeringChar stringIndex stringTuning positionIndex controlAnnotation
+  | otherwise = fretChar orientationVertical index
 
-fingeringChar stringTuning positionIndex controlAnnotation = case controlAnnotation of 
+fingeringChar stringIndex stringTuning positionIndex controlAnnotation = case controlAnnotation of 
     AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
     AnnotateMarking -> fingeringCharUnannotated positionIndex
-    AnnotatePosition -> head (show positionIndex)
+    AnnotatePositionVertical -> head (show positionIndex)
+    AnnotatePositionHorizontal -> head (show stringIndex)
 
 fretChar orientationVertical 0 | orientationVertical = '='
-                               | otherwise = '-'
+                               | otherwise = '|'
                                
 fretChar orientationVertical _ | orientationVertical = '-'
                                | otherwise = '-'

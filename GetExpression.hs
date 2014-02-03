@@ -17,9 +17,9 @@ expressions = [
   "renderGuitarChords AnnotateMarking False standardTuning (minorChord B) 4"
  ,"renderGuitarChords AnnotateMarking True dropD (majorChord F) 4"
  ,"renderGuitarChords AnnotateNote True standardTuning (majorChord G) 4"
- ,"renderGuitarChords AnnotatePosition True ukelele (majorChord C) 4"
+ ,"renderGuitarChords AnnotatePositionVertical True ukelele (majorChord C) 4"
  ,"renderPianoChord AnnotateNote (majorChord C)"
- ,"renderPianoChord AnnotatePosition (majorChord A)"
+ ,"renderPianoChord AnnotatePositionHorizontal (majorChord A)"
  ]
 
  

@@ -10,7 +10,7 @@ import Data.Maybe
 import Data.Char
 import qualified Data.Set
 
-data ControlAnnotation = AnnotateNote | AnnotatePosition | AnnotateMarking 
+data ControlAnnotation = AnnotateNote | AnnotatePositionVertical | AnnotatePositionHorizontal | AnnotateMarking
 
 abbreviateNote x = "CdDeEFgGaAbB" !! fromJust (elemIndex x chromaticScale)
     
