@@ -12,7 +12,7 @@ import qualified Data.Set
 
 import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin)
 import Music.Instrument.Piano
-import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,maxPatternHeight,abbreviateNote,horizontalConcat)
+import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat)
 
 
 renderGuitarChords :: ControlAnnotation -> Bool -> Bool -> [Note] -> Chord -> Int -> [Char]

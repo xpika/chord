@@ -16,6 +16,8 @@ abbreviateNote x = "CdDeEFgGaAbB" !! fromJust (elemIndex x chromaticScale)
     
 chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
 
+chromaticScaleLength = length chromaticScale
+
 tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
 
 applyNTimes f n x = iterate f x !! n
@@ -28,13 +30,13 @@ degreeToChromaticIndex degree = fromJust (findIndex (flip equiv degree) degreeSc
 
 degreeScale = iterate (noteMap sharp) First
 
-levelChord = map (flip mod (12::Int))
+levelChord = map (flip mod chromaticScaleLength)
 
 inversions = map sequenceDegrees . rotations
 
 rotations = reverse . (\list -> map (\n -> (take (length list) . drop (length list -n)) (cycle list)) [1..length list])
 
-sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) (12::Int)) ds
+sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) chromaticScaleLength) ds
 
 findChord inputNotes = do 
   chordType <- chordTypes
@@ -48,8 +50,5 @@ chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
               major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
 
 chordToNotes chord = map snd $ degrees chord
-
-maxPatternHeight = 4 ::Int
-
 
 horizontalConcat str1 str2 = (unlines) $ zipWith (++) (lines str1) (lines str2)
