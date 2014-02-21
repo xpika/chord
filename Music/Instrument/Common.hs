@@ -56,3 +56,8 @@ horizontalConcat str1 str2 = (unlines) $ zipWith (++) (lines str1) (lines str2)
 deepenListOfLists = map deepenList
 deepenList = map (:[])
 
+findIndicess p xs ys = map (\x -> findIndices (p x) xs) ys
+
+demoEquiv string number = length string == (length (show number))
+
+

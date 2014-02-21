@@ -4,30 +4,29 @@ import Music.Diatonic
 import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
+import Music.Diatonic.Scale
 import Data.List
 import Data.Maybe
 import Data.Char
 import Control.Monad
 import qualified Data.Set
 
-import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin,getPositionMultiPatternMin)
+import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin,getPositionMultiPatternMin,getPositionPatternProgressions,PositionPatternProgression)
 import Music.Instrument.Piano
-import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,deepenListOfLists)
+import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat)
 
-renderGuitarChord :: ControlAnnotation -> Bool -> Bool -> [Note] -> Chord -> Int -> Int -> [Char]
+
+renderGuitarChord :: PositionPatternProgression a => ControlAnnotation -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
 renderGuitarChord controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
- head $
-    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from
+  head $
+    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
+  where positionPatternProgressions = getPositionPatternProgressions chord tuning maxHeight
 
-renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
+renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
-    renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight
+    map (renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight) positionPatternsProgressions
 
-renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight =
-  map (renderGuitarChord''' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight)
-    (map deepenListOfLists $ filter (not . null) $ findPositionPatterns chord tuning maxHeight)
-
-renderGuitarChord''' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight positionPatterns =
+renderGuitarChord'' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight positionPatterns =
   heading $ concat $ intersperse "\n" $ 
       renderPositionPatternsRange firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns
   where
@@ -58,11 +57,12 @@ char stringIndex orientationVertical stringTuning positionIndices controlAnnotat
   | index `elem` positionIndices = fingeringChar stringIndex stringTuning index controlAnnotation
   | otherwise = fretChar orientationVertical index
 
-fingeringChar stringIndex stringTuning positionIndex controlAnnotation = case controlAnnotation of 
-  AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
-  AnnotateMarking -> fingeringCharUnannotated positionIndex
-  AnnotatePositionVertical -> head (show positionIndex)
-  AnnotatePositionHorizontal -> head (show stringIndex)
+fingeringChar stringIndex stringTuning positionIndex controlAnnotation = 
+  case controlAnnotation of 
+    AnnotateNote -> abbreviateNote $ tuningAndPosToNote stringTuning positionIndex
+    AnnotateMarking -> fingeringCharUnannotated positionIndex
+    AnnotatePositionVertical -> head (show positionIndex)
+    AnnotatePositionHorizontal -> head (show stringIndex)
 
 fretChar orientationVertical 0 | orientationVertical = '='
                                | otherwise = '|'

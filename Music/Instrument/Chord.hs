@@ -18,6 +18,8 @@ module Music.Instrument.Chord
  ,
  module Music.Diatonic.Chord
  ,
+ module Music.Diatonic.Scale
+ ,
  ukelele
  ,
  findPositionPatterns
@@ -35,3 +37,4 @@ import Music.Diatonic
 import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
+import Music.Diatonic.Scale
