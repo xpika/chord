@@ -25,6 +25,8 @@ module Music.Instrument.Chord
  findPositionPatterns
  ,
  getPositionPatternRange
+ ,
+ PositionPatternProgression (..)
 )
 where
 

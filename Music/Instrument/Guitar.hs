@@ -35,27 +35,44 @@ instance PositionPatternProgression Scale where
   getPositionPatternProgressions scale tuning maxHeight = filter (not . null) $ findPositionPatterns scale tuning maxHeight 
   requiresSequence _ = False
 
-findPositionPatterns chord tuning count =
-  filter ( not . null  ) $ findPositionPatterns' chord tuning count
-        
-findPositionPatterns' chord tuning count =
-  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' chord tuning x count) [0..])
+instance PositionPatternProgression Note where 
+  getPositionPatternProgressions note tuning maxHeight = filter (not . null) $ findPositionPatterns note tuning maxHeight 
+  requiresSequence _ = False
 
-findPositionPatterns'' chord tuning from count =
+findPositionPatterns chord tuning maxHeight =
+  filter ( not . null  ) $ findPositionPatterns' chord tuning maxHeight
+        
+findPositionPatterns' chord tuning maxHeight =
+  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' chord tuning x maxHeight) [0..])
+
+findPositionPatterns'' chord tuning from maxHeight =
   map (zipWith ( ( (raise . concat) .) . findIndicess superEquiv) 
-    (frettedGuitarStringsLengths from count tuning)) (notePatterns chord tuning from count)
+    (frettedGuitarStringsLengths from maxHeight tuning)) (notePatterns chord tuning from maxHeight)
   where
   raise = map ((+from))
 
-notePatterns notable tuning from count = sequencer (stringPatterns notable tuning from count)
+notePatterns notable tuning from count = sequencer (guitarStringPatterns notable tuning from count)
   where sequencer | requiresSequence notable = deepenListOfLists . sequence
                   | otherwise = (:[]) . id
 
-stringPatterns notable tuning from count =
- map (filter (flip (any . superEquiv) (notes notable)))
+
+class NewNotes a where
+  newNotes :: a -> [Note]
+
+instance NewNotes Chord where
+  newNotes = notes
+
+instance NewNotes Scale where
+  newNotes = notes
+
+instance NewNotes Note where
+  newNotes n = [n]
+
+guitarStringPatterns notable tuning from count =
+ map (filter (flip (any . superEquiv) (newNotes notable)))
    (frettedGuitarStringsLengths from count tuning)
 
-frettedGuitarStringsLengths from count = map (take count . drop from) . frettedGuitarStrings
+frettedGuitarStringsLengths from maxHeight = map (take maxHeight . drop from) . frettedGuitarStrings
 frettedGuitarStrings tuning = map fret tuning
 fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
 
@@ -64,7 +81,7 @@ tuneAndPositionToNote tune position = fret tune !! position
 
 getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 
-getPositionPatternMin = minimum . map minimum 
+getPositionPatternMin = minimum . map minimum
 getPositionPatternMax = maximum . map maximum
 
 getPositionMultiPatternMax = maximum . map maximum . map maximum
