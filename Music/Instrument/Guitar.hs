@@ -15,14 +15,6 @@ import qualified Data.Set
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-{-
-type Position = Int
-type String = [Int]
-type PostionPattern = [[Int]]
-type PositonPattern = [[[Int]]]
-type PositonPatternProgression = [[[[Int]]]]
--}
-
 class PositionPatternProgression a where
   getPositionPatternProgressions :: a -> [Note] -> Int -> [[[[Int]]]]
   requiresSequence :: a -> Bool
@@ -81,14 +73,11 @@ tuneAndPositionToNote tune position = fret tune !! position
 
 getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 
-
 getPositionPatternMin = minimum . concat
 getPositionPatternMax = maximum . concat
 
 getPositionMultiPatternMax = getPositionPatternMax . concat
 getPositionMultiPatternMin = getPositionPatternMin . concat
-
-
 
 dropD = [D,A,D,G,B,E]
 

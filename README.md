@@ -33,16 +33,16 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking True
 ----**
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning (majorChord G) 4 0)
-==DGB=
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionHorizontal False True (reverse standardTuning) (majorChord G) 4 0)
+=432==
 ------
--B----
-G----G
+----1-
+5----0
 
-==DG==
+==32==
 ------
--B----
-G---DG
+----1-
+54---0
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionVertical True True ukelele (majorChord C) 4 0)
 000=
 ----

@@ -19,10 +19,8 @@ import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbrev
 renderGuitarChord :: PositionPatternProgression a => ControlAnnotation -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
 renderGuitarChord controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
   head $
-    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning' maxHeight from positionPatternProgressions
-  where positionPatternProgressions = getPositionPatternProgressions chord tuning' maxHeight
-        tuning' | firstTuningFirst = tuning
-                | otherwise = reverse tuning
+    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
+  where positionPatternProgressions = getPositionPatternProgressions chord tuning maxHeight
 
 renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
@@ -44,9 +42,12 @@ renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tun
   combiner $
     map (\(pos,stringIndex) -> 
        renderGuitarString stringIndex orientationVertical controlAnnotation from maximumPosition pos (tuning!!stringIndex))
-         (zip positionPattern [0..])
+         (zip positionPattern stringIndicies)
   where combiner | orientationVertical = foldl1 horizontalConcat
                  | otherwise = unlines
+        stringIndicies | firstTuningFirst = [0..]
+                       | otherwise = [guitarStringCount-1,guitarStringCount-2..]
+        guitarStringCount = length positionPattern
        
 
 renderGuitarString stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning = 
