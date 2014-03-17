@@ -23,7 +23,7 @@ Fret: 3
 --*-
 -*--
 *---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking False True dropD (majorChord F) 4 0)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking True True dropD (majorChord F) 4 0)
 =o====
 ----**
 ---*--
@@ -33,17 +33,17 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateMarking Fals
 ----**
 ---*--
 ***---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote False True standardTuning (majorChord G) 4 0)
-==GDA=
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning (majorChord G) 4 0)
+==DGB=
 ------
--d----
+-B----
 G----G
 
-==GD==
+==DG==
 ------
--d----
-G---CG
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionVertical False True ukelele (majorChord C) 4 0)
+-B----
+G---DG
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionVertical True True ukelele (majorChord C) 4 0)
 000=
 ----
 ----
@@ -53,11 +53,16 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotatePositionVert
 ----
 ----
 -3-3
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote False True standardTuning (majorScale B) 4 0)
-E===AE
--Cae--
-gdA-Bg
----F--
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning (majorScale B) 4 0)
+E===BE
+-bea--
+gBE-dg
+---b--
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning E 4 0)
+E====E
+------
+--E---
+------
 Prelude Music.Instrument.Chord> putStrLn (renderPianoChord 0 AnnotateMarking (majorChord C))
  ____________________ 
 | | || | | | || || | |

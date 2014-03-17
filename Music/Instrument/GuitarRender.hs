@@ -11,7 +11,7 @@ import Data.Char
 import Control.Monad
 import qualified Data.Set
 
-import Music.Instrument.Guitar (findPositionPatterns,getPositionPatternMin,getPositionMultiPatternMin,getPositionPatternProgressions,PositionPatternProgression)
+import Music.Instrument.Guitar (findPositionPatterns,getPositionMultiPatternMin,getPositionPatternProgressions,PositionPatternProgression)
 import Music.Instrument.Piano
 import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat)
 
@@ -19,8 +19,10 @@ import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbrev
 renderGuitarChord :: PositionPatternProgression a => ControlAnnotation -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
 renderGuitarChord controlAnnotation firstTuningFirst orientationVertical tuning chord maxHeight from =
   head $
-    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
-  where positionPatternProgressions = getPositionPatternProgressions chord tuning maxHeight
+    renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning' maxHeight from positionPatternProgressions
+  where positionPatternProgressions = getPositionPatternProgressions chord tuning' maxHeight
+        tuning' | firstTuningFirst = tuning
+                | otherwise = reverse tuning
 
 renderGuitarChord' controlAnnotation firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
@@ -41,12 +43,11 @@ renderPositionPatternsRange firstTuningFirst orientationVertical controlAnnotati
 renderPositionPattern firstTuningFirst orientationVertical controlAnnotation tuning from maximumPosition positionPattern = 
   combiner $
     map (\(pos,stringIndex) -> 
-       renderGuitarString stringIndex orientationVertical controlAnnotation from maximumPosition pos (arranger tuning!!stringIndex))
+       renderGuitarString stringIndex orientationVertical controlAnnotation from maximumPosition pos (tuning!!stringIndex))
          (zip positionPattern [0..])
   where combiner | orientationVertical = foldl1 horizontalConcat
                  | otherwise = unlines
-        arranger | firstTuningFirst = id
-                 | otherwise = reverse
+       
 
 renderGuitarString stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning = 
   lineBreaker $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) [from..(from + max)]
