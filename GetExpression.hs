@@ -19,7 +19,7 @@ expressions = [
  ,"renderGuitarChord AnnotatePositionHorizontal False True (reverse standardTuning) (majorChord G) 4 0"
  ,"renderGuitarChord AnnotatePositionVertical True True ukelele (majorChord C) 4 0"
  ,"renderGuitarChord AnnotateNote True True standardTuning (majorScale B) 4 0"
- ,"renderGuitarChord AnnotateNote True True standardTuning E 4 0"
+ ,"renderGuitarChord AnnotateNote True True standardTuning E 13 0"
  ,"renderPianoChord 0 AnnotateMarking (majorChord C)"
  ,"renderPianoChord 1 AnnotateNote (majorChord A)"
  ,"head $ findPositionPatterns (majorChord C) standardTuning 4"]

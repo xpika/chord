@@ -58,11 +58,20 @@ E===BE
 -bea--
 gBE-dg
 ---b--
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning E 4 0)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord AnnotateNote True True standardTuning E 13 0)
 E====E
 ------
 --E---
 ------
+------
+----E-
+------
+-E----
+------
+---E--
+------
+------
+E----E
 Prelude Music.Instrument.Chord> putStrLn (renderPianoChord 0 AnnotateMarking (majorChord C))
  ____________________ 
 | | || | | | || || | |
