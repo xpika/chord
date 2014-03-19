@@ -32,21 +32,21 @@ instance PositionPatternProgression Note where
   requiresSequence _ = False
 
 findPositionPatterns chord tuning maxHeight =
-  filter ( not . null  ) $ findPositionPatterns' chord tuning maxHeight
+  filter (not . null) $ findPositionPatterns' chord tuning maxHeight
         
 findPositionPatterns' chord tuning maxHeight =
   scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' chord tuning x maxHeight) [0..])
 
-findPositionPatterns'' chord tuning from maxHeight =
-  map (zipWith ( ( (raise . concat) .) . findIndicess superEquiv) 
-    (frettedGuitarStringsLengths from maxHeight tuning)) (notePatterns chord tuning from maxHeight)
-  where
-  raise = map ((+from))
-
-notePatterns notable tuning from count = sequencer (guitarStringPatterns notable tuning from count)
-  where sequencer | requiresSequence notable = deepenListOfLists . sequence
+findPositionPatterns'' chord tuning from maxHeight = sequencer $
+    map (\stringTune -> filter (positionInNoteable chord stringTune) (frettedGuitarStringPostionLength from maxHeight)) 
+      tuning
+  where sequencer | requiresSequence chord = deepenListOfLists . sequence
                   | otherwise = (:[]) . id
 
+positionInNoteable noteable stringTuning pos = any (superEquiv note) (newNotes noteable)
+  where note = tuningAndPosToNote stringTuning pos 
+
+frettedGuitarStringPostionLength from maxHeight = [from..(from+maxHeight-1)]
 
 class NewNotes a where
   newNotes :: a -> [Note]
@@ -59,17 +59,6 @@ instance NewNotes Scale where
 
 instance NewNotes Note where
   newNotes n = [n]
-
-guitarStringPatterns notable tuning from count =
- map (filter (flip (any . superEquiv) (newNotes notable)))
-   (frettedGuitarStringsLengths from count tuning)
-
-frettedGuitarStringsLengths from maxHeight = map (take maxHeight . drop from) . frettedGuitarStrings
-frettedGuitarStrings tuning = map fret tuning
-fret tune = map (\n -> canonize . applyNTimes sharp n $ tune) [0..]
-
-positionsAndTuningToNotes tuning positions = zipWith tuneAndPositionToNote tuning positions
-tuneAndPositionToNote tune position = fret tune !! position
 
 getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 

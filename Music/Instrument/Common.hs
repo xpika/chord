@@ -18,7 +18,7 @@ chromaticScale = [C,sharp C,D,sharp D,E,F,sharp F,G,sharp G,A,sharp A,B]
 
 chromaticScaleLength = length chromaticScale
 
-tuningAndPosToNote tuning pos = canonize $ applyNTimes sharp pos tuning
+tuningAndPosToNote stringTuning pos = canonize $ applyNTimes sharp pos stringTuning
 
 applyNTimes f n x = iterate f x !! n
 
@@ -61,4 +61,14 @@ findIndicess p xs ys = map (\x -> findIndices (p x) xs) ys
 
 demoEquiv string number = length string == (length (show number))
 
+uniqueBy eq l = uniqueBy' l []
+  where
+    uniqueBy' [] _ = []
+    uniqueBy' (y:ys) xs
+      | elem_by eq y xs = uniqueBy' ys xs
+      | otherwise = y : uniqueBy' ys (y:xs)
+
+elem_by :: (a -> a -> Bool) -> a -> [a] -> Bool
+elem_by _ _ [] = False
+elem_by eq y (x:xs) = x `eq` y || elem_by eq y xs
 
