@@ -14,12 +14,12 @@ getExpressionAndLine string = (makeGhciLine string , head $ rights [parseExp str
 makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
 
 expressions = [
-  "renderGuitarChord AnnotateMarking False True False standardTuning (minorChord C) 4 1"
- ,"renderGuitarChord AnnotateMarking False True True dropD (majorChord F) 4 0"
- ,"renderGuitarChord AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0"
- ,"renderGuitarChord AnnotatePositionVertical False True True ukelele (majorChord C) 4 0"
- ,"renderGuitarChord AnnotateNote False True True standardTuning (majorScale B) 4 0"
- ,"renderGuitarChord AnnotateNote True True True standardTuning E 13 0"
+  "renderGuitarChord True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1"
+ ,"renderGuitarChord False AnnotateMarking False True True dropD (majorChord F) 4 0"
+ ,"renderGuitarChord False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0"
+ ,"renderGuitarChord False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0"
+ ,"renderGuitarChord False AnnotateNote False True True standardTuning (majorScale B) 4 0"
+ ,"renderGuitarChord False AnnotateNote True True True standardTuning E 13 0"
  ,"renderPianoChord 0 AnnotateMarking (majorChord C)"
  ,"renderPianoChord 1 AnnotateNote (majorChord A)"
- ,"head $ findPositionPatterns (majorChord C) standardTuning 4"]
+ ,"head $ findPositionPatterns True (majorChord C) standardTuning 4"]

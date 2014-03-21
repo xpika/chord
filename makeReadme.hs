@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-} 
 import System.IO
 import Music.Instrument.Chord 
+import Music.Instrument.Common
 import Language.Haskell.TH 
 import Language.Haskell.Meta.Parse.Careful 
 import Data.Either
@@ -23,4 +24,3 @@ main = do file <- readFile "README.md.template"
                              fileLines
           writeFile "README.md" modifiedFile
 
-insertAt = (\n x xs -> case splitAt n xs of { (a, b) -> a ++ [x] ++ b })

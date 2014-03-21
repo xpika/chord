@@ -72,3 +72,7 @@ elem_by :: (a -> a -> Bool) -> a -> [a] -> Bool
 elem_by _ _ [] = False
 elem_by eq y (x:xs) = x `eq` y || elem_by eq y xs
 
+applyIf :: Bool -> (a -> a) -> a -> a
+applyIf p f v = if p then f v else v
+
+insertAt = (\n x xs -> case splitAt n xs of { (a, b) -> a ++ [x] ++ b })

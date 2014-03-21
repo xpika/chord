@@ -11,36 +11,40 @@ import Data.Char
 import Control.Monad
 import qualified Data.Set
 
-
-import Music.Instrument.Guitar (findPositionPatterns,getPositionMultiPatternMin,getPositionPatternProgressions,PositionPatternProgression)
+import Music.Instrument.Guitar (
+   findPositionPatterns
+  ,getPositionMultiPatternMin
+  ,getPositionPatternProgressions
+  ,PositionPatternProgression
+  ,getPositionMultiPatternMinAdjusted
+  ,getPositionPatternMinAdjusted
+  ,getPositionPatternHeight
+  ,getPositionPatternSpannedFrets)
 import Music.Instrument.Piano
-import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat)
+import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt)
 
+import Debug.Trace
 
-renderGuitarChord :: PositionPatternProgression a => ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
-renderGuitarChord controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
+renderGuitarChord :: PositionPatternProgression a => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
+renderGuitarChord allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
   head $
     renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
-  where positionPatternProgressions = getPositionPatternProgressions chord tuning maxHeight
+  where positionPatternProgressions = getPositionPatternProgressions allowOpens chord tuning maxHeight
 
 renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
     map (renderGuitarChord'' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight) positionPatternsProgressions
 
 renderGuitarChord'' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight positionPatterns =
-  heading $ concat $ intersperse "\n" $ 
+   concat $ intersperse "\n" $ 
       renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns
-  where
-  minPosition = getPositionMultiPatternMin positionPatterns
-  heading | minPosition /= 0 = (++) ("Fret: " ++ show minPosition ++ "\n")
-          | otherwise = id
 
 renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
   map (renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
   where minPosition = getPositionMultiPatternMin positionPatterns'
 
 renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
-  unlines $ guitarStringTexts
+   heading $ unlines  $ guitarStringTexts
   where guitarStringTexts | orientationVertical = Data.List.transpose guitarStringTexts'
                           | otherwise = guitarStringTexts'
         guitarStringTexts' | annotateFrets =  (Data.List.transpose fretAnnotations) ++ guitarStringTexts''
@@ -49,21 +53,33 @@ renderPositionPattern annotateFrets firstTuningFirst orientationVertical control
         overlayStringRight x y = map last $ Data.List.transpose [x,y]
         fretAnnotationPadding = take maximumFretAnnotationLength (repeat ' ')
         maximumFretAnnotationLength = maximum . map length $ fretAnnotations'
-        fretAnnotations' = map show $ take (maxHeight+1) [0..]
+        fretAnnotations' = map show $ take (maxHeight'+1) [0..]
         guitarStringTexts'' =
-          map (\(pos,stringIndex) -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight pos (tuning!!stringIndex))
-            (zip positionPattern stringIndicies)
+          map (\(pos,stringIndex) 
+            -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight' pos (tuning!!stringIndex) positionPatternSpannedFrets)
+              (zip positionPattern stringIndicies)
         stringIndicies | firstTuningFirst = [0..]
                        | otherwise = [guitarStringCount-1,guitarStringCount-2..]
         guitarStringCount = length positionPattern
+        maxHeight' = getPositionPatternHeight positionPattern
+        minHeight' = getPositionPatternHeight positionPattern
+        positionPatternSpannedFrets = getPositionPatternSpannedFrets positionPattern maxHeight
+        minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
+        heading | minPositionAdjusted /= 0 = (++) ("Fret: " ++ show minPositionAdjusted ++ "\n")
+                | otherwise = id
 
-renderGuitarString stringIndex orientationVertical controlAnnotation from maxHeight positionIndices stringTuning =  
-   lineBreaker $ renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight positionIndices stringTuning 
-  where lineBreaker | orientationVertical = intersperse '\n'
-                    | otherwise = id
 
-renderGuitarString' stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning = 
-  map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) [from..(from + max)]
+firstGap [] = Nothing
+firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)
+
+renderGuitarString' stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning positionPatternSpannedFrets   = 
+  applyIf (not (positionPatternsGap == Nothing)) (addGap positionPatternsGap)
+    $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation)  positionPatternSpannedFrets
+  where positionPatternsGap = firstGap positionPatternSpannedFrets 
+        addGap (Just n) str = insertAt n (gapChar orientationVertical) str
+
+gapChar orientationVertical | orientationVertical = '~'
+                            | otherwise = 'S'
 
 char stringIndex orientationVertical stringTuning positionIndices controlAnnotation index 
   | index `elem` positionIndices = fingeringChar stringIndex stringTuning index controlAnnotation
