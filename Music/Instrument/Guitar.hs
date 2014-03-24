@@ -45,19 +45,21 @@ findPositionPatterns'' allowOpens chord tuning from maxHeight = applyIf allowOpe
 
 isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
 
-getPositionPatternSpannedFrets positionPattern maxHeight 
+getPositionPatternSpannedFrets positionPattern maxHeight
   | isOpened maxHeight positionPattern = 0 : ((uncurry enumFromTo) (getPositionPatternRange prunedPositionPattern))
   | otherwise = (uncurry enumFromTo) (getPositionPatternRange positionPattern)
   where prunedPositionPattern = map (filter (not.(==0)))  positionPattern
 
-findPositionPatterns''' includeOpens chord tuning from maxHeight = sequencer $
+findPositionPatterns''' includeOpens chord tuning from maxHeight = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight
+  where sequencer | requiresSequence chord = filter ( not . null . concat ).  map (filter ( not.  null)) . sequence . applyIf False addEmpties . deepenListOfLists
+                  | otherwise = (:[]) 
+
+findPositionPatterns'''' includeOpens chord tuning from maxHeight =
     map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
       tuning
-  where sequencer | requiresSequence chord = deepenListOfLists . sequence
-                  | otherwise = (:[]) . id
 
 positionInNoteable noteable stringTuning pos = any (superEquiv note) (newNotes noteable)
-  where note = tuningAndPosToNote stringTuning pos 
+  where note = tuningAndPosToNote stringTuning pos
 
 frettedGuitarStringPostionLength from maxHeight = [from..(from+maxHeight-1)]
 
@@ -91,7 +93,7 @@ getPositionMultiPatternMin = getPositionPatternMin . concat
 getPositionMultiPatternMinAdjusted maxHeight  = getPositionPatternMinAdjusted maxHeight   . concat
 
 getPositionPatternMinAdjusted maxHeight positionPattern
-  | isOpened maxHeight positionPattern =  head . drop 1 .  nub . sort . concat  $ positionPattern
+  | isOpened maxHeight positionPattern =  head . drop 1 . nub . sort . concat  $ positionPattern
   | otherwise = getPositionPatternMin positionPattern
 
 dropD = [D,A,D,G,B,E]

@@ -43,12 +43,17 @@ renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical c
   map (renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
   where minPosition = getPositionMultiPatternMin positionPatterns'
 
+
 renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
-   heading $ unlines  $ guitarStringTexts
-  where guitarStringTexts | orientationVertical = Data.List.transpose guitarStringTexts'
-                          | otherwise = guitarStringTexts'
-        guitarStringTexts' | annotateFrets =  (Data.List.transpose fretAnnotations) ++ guitarStringTexts''
-                           | otherwise = guitarStringTexts''
+   heading $ unlines $ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern
+  where minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
+        heading | minPositionAdjusted /= 0 = (++) ("Fret: " ++ show minPositionAdjusted ++ "\n")
+                | otherwise = id
+
+renderPositionPattern' annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
+  guitarStringTexts
+  where guitarStringTexts = applyIf orientationVertical (map reverse . Data.List.transpose) guitarStringTexts'
+        guitarStringTexts' = applyIf annotateFrets (++ (Data.List.transpose fretAnnotations)) guitarStringTexts''
         fretAnnotations = map (overlayStringRight fretAnnotationPadding) fretAnnotations'
         overlayStringRight x y = map last $ Data.List.transpose [x,y]
         fretAnnotationPadding = take maximumFretAnnotationLength (repeat ' ')
@@ -57,7 +62,7 @@ renderPositionPattern annotateFrets firstTuningFirst orientationVertical control
         guitarStringTexts'' =
           map (\(pos,stringIndex) 
             -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight' pos (tuning!!stringIndex) positionPatternSpannedFrets)
-              (zip positionPattern stringIndicies)
+              (zip (reverse positionPattern) stringIndicies)
         stringIndicies | firstTuningFirst = [0..]
                        | otherwise = [guitarStringCount-1,guitarStringCount-2..]
         guitarStringCount = length positionPattern
@@ -65,9 +70,7 @@ renderPositionPattern annotateFrets firstTuningFirst orientationVertical control
         minHeight' = getPositionPatternHeight positionPattern
         positionPatternSpannedFrets = getPositionPatternSpannedFrets positionPattern maxHeight
         minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
-        heading | minPositionAdjusted /= 0 = (++) ("Fret: " ++ show minPositionAdjusted ++ "\n")
-                | otherwise = id
-
+        tuning' = reverse tuning
 
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)

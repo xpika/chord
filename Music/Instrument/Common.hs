@@ -54,8 +54,11 @@ chordToNotes chord = map snd $ degrees chord
 horizontalConcat str1 str2 = unlines $ horizontalConcat' (lines str1) (lines str2)
 horizontalConcat' str1 str2 = zipWith (++) str1 str2
 
+deepenListOfListsAndAddEmpties =  addEmpties . deepenListOfLists
 deepenListOfLists = map deepenList
+
 deepenList = map (:[])
+addEmpties = map ([]:)
 
 findIndicess p xs ys = map (\x -> findIndices (p x) xs) ys
 
