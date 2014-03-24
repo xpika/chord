@@ -61,7 +61,7 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
         fretAnnotations' = map show $ take (maxHeight'+1) [0..]
         guitarStringTexts'' =
           map (\(pos,stringIndex) 
-            -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight' pos (tuning!!stringIndex) positionPatternSpannedFrets)
+            -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight' pos (tuning'!!stringIndex) positionPatternSpannedFrets)
               (zip (reverse positionPattern) stringIndicies)
         stringIndicies | firstTuningFirst = [0..]
                        | otherwise = [guitarStringCount-1,guitarStringCount-2..]

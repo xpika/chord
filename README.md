@@ -62,21 +62,21 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord False AnnotatePositi
 ----
 -3-3
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord False AnnotateNote False True True standardTuning (majorScale B) 4 0)
-E===AE
--Cae--
-gdA-Bg
----F--
+E===BE
+-bea--
+gBE-dg
+---b--
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarChord False AnnotateNote True True True standardTuning E 13 0)
  0E====E
  1------
- 2--A---
+ 2--E---
  3------
  4------
- 5----D-
+ 5----E-
  6------
- 7-g----
+ 7-E----
  8------
- 9---B--
+ 9---E--
 01------
 11------
 21E----E
