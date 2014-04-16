@@ -10,18 +10,19 @@ import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 import Music.Instrument.Coordinate
 
-renderPianoChord octaves annotation chord  = renderPianoPositions octaves annotation degrees
-    where degrees = extractDegrees chord
+renderPianoConcept octaves annotation chord  = renderPianoPositions octaves annotation degrees
+  where degrees = extractDegrees' chord
 
 renderPianoPositions octaves annotation positions = foldl (markPiano annotation) (nOctavePianoTextDiagram octaves') positions
   where octaves' = if octaves == -1 then maximum positions `div` 12 else octaves
 
 markPiano marking piano position = replaceAtText (getMultiOctavePianoPositionCharacterIndex position) marking' piano
-    where marking' = case marking of 
-                       AnnotateMarking -> '*'
-                       AnnotatePositionHorizontal -> head (show position)
-                       AnnotatePositionVertical -> '1'
-                       AnnotateNote -> abbreviateNote $ tuningAndPosToNote C position
+  where marking' = case marking of {
+     AnnotateMarking -> '*'
+    ;AnnotatePositionHorizontal -> head (show position)
+    ;AnnotatePositionVertical -> '1'
+    ;AnnotateNote -> abbreviateNote $ tuningAndPosToNote C position
+   }
 
 cleanPiano = map (\x -> if elem x pianoMarkings then ' ' else x ) markedPiano
 
@@ -30,9 +31,6 @@ getMultiOctavePianoPositionCharacterIndex pos = ((octave * pianoOctaveTextDiagra
         (octave,subPosition) = positionToOctaveAndSubposition pos
 
 positionToOctaveAndSubposition pos = divMod pos chromaticScaleLength
-
-
-       
 
 getPianoPositionCharacterIndex pos = fromJust (elemIndex (pianoMarkings !! pos) markedPiano)
 

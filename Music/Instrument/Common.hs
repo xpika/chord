@@ -9,6 +9,19 @@ import Data.List
 import Data.Maybe
 import Data.Char
 import qualified Data.Set
+import Music.Diatonic.Scale
+
+class NewNotes a where
+  newNotes :: a -> [Note]
+
+instance NewNotes Chord where
+  newNotes = notes
+
+instance NewNotes Scale where
+  newNotes = notes
+
+instance NewNotes Note where
+  newNotes n = [n]
 
 data ControlAnnotation = AnnotateNote | AnnotatePositionVertical | AnnotatePositionHorizontal | AnnotateMarking
 
@@ -24,7 +37,13 @@ applyNTimes f n x = iterate f x !! n
 
 noteToChromaticIndex note = fromJust (findIndex (flip equiv note) chromaticScale)
 
-extractDegrees chord = map (+ (noteToChromaticIndex (root chord))) $ map degreeToChromaticIndex  $ map fst $ degrees $ chord
+extractDegrees chord = map (+ (noteToChromaticIndex (root chord))) $ map degreeToChromaticIndex $ map fst $ degrees $ chord
+
+extractDegrees' concept = map (+ (noteToChromaticIndex root')) $ map (semitones . distance root' ) notes'
+ where 
+ root' = head notes'
+ notes' = newNotes concept
+
 
 degreeToChromaticIndex degree = fromJust (findIndex (flip equiv degree) degreeScale)
 

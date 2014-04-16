@@ -23,10 +23,8 @@ import Music.Instrument.Guitar (
 import Music.Instrument.Piano
 import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt)
 
-import Debug.Trace
-
-renderGuitarChord :: PositionPatternProgression a => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
-renderGuitarChord allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
+renderGuitarConcept :: PositionPatternProgression a => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
+renderGuitarConcept allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
   head $
     renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
   where positionPatternProgressions = getPositionPatternProgressions allowOpens chord tuning maxHeight
@@ -42,7 +40,6 @@ renderGuitarChord'' controlAnnotation annotateFrets firstTuningFirst orientation
 renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
   map (renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
   where minPosition = getPositionMultiPatternMin positionPatterns'
-
 
 renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
    heading $ unlines $ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern

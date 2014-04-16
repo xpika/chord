@@ -15,8 +15,6 @@ import qualified Data.Set
 import Music.Instrument.Piano
 import Music.Instrument.Common
 
-import Debug.Trace
-
 class PositionPatternProgression a where
   getPositionPatternProgressions :: Bool -> a -> [Note] -> Int -> [[[[Int]]]]
   requiresSequence :: a -> Bool
@@ -62,18 +60,6 @@ positionInNoteable noteable stringTuning pos = any (superEquiv note) (newNotes n
   where note = tuningAndPosToNote stringTuning pos
 
 frettedGuitarStringPostionLength from maxHeight = [from..(from+maxHeight-1)]
-
-class NewNotes a where
-  newNotes :: a -> [Note]
-
-instance NewNotes Chord where
-  newNotes = notes
-
-instance NewNotes Scale where
-  newNotes = notes
-
-instance NewNotes Note where
-  newNotes n = [n]
 
 getPositionPatternRange = liftM2 (,) getPositionPatternMin getPositionPatternMax
 

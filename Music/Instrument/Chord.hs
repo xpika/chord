@@ -1,6 +1,6 @@
 module Music.Instrument.Chord
 (
- renderGuitarChord
+ renderGuitarConcept
  ,
  standardTuning
  ,
@@ -8,7 +8,7 @@ module Music.Instrument.Chord
  ,
  ControlAnnotation (..)
  ,
- renderPianoChord
+ renderPianoConcept
  ,
  module Music.Diatonic.Note
  ,
