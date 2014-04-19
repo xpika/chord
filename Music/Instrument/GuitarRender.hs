@@ -19,11 +19,15 @@ import Music.Instrument.Guitar (
   ,getPositionMultiPatternMinAdjusted
   ,getPositionPatternMinAdjusted
   ,getPositionPatternHeight
-  ,getPositionPatternSpannedFrets)
+  ,getPositionPatternSpannedFrets
+  )
 import Music.Instrument.Piano
-import Music.Instrument.Common (ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt)
+import Music.Instrument.Common (
+ ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt
+ ,NewNotes
+ )
 
-renderGuitarConcept :: PositionPatternProgression a => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
+renderGuitarConcept :: (PositionPatternProgression a,NewNotes a) => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
 renderGuitarConcept allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
   head $
     renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions

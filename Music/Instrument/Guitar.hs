@@ -16,20 +16,18 @@ import Music.Instrument.Piano
 import Music.Instrument.Common
 
 class PositionPatternProgression a where
-  getPositionPatternProgressions :: Bool -> a -> [Note] -> Int -> [[[[Int]]]]
   requiresSequence :: a -> Bool
 
 instance PositionPatternProgression Chord where 
-  getPositionPatternProgressions allowOpens chord tuning maxHeight = filter (not . null) $ findPositionPatterns allowOpens chord tuning maxHeight 
   requiresSequence _ = True
 
 instance PositionPatternProgression Scale where 
-  getPositionPatternProgressions allowOpens scale tuning maxHeight = filter (not . null) $ findPositionPatterns allowOpens scale tuning maxHeight 
   requiresSequence _ = False
 
 instance PositionPatternProgression Note where 
-  getPositionPatternProgressions allowOpens note tuning maxHeight = filter (not . null) $ findPositionPatterns allowOpens note tuning maxHeight 
   requiresSequence _ = False
+
+getPositionPatternProgressions allowOpens note tuning maxHeight = filter (not . null) $ findPositionPatterns allowOpens note tuning maxHeight  
 
 findPositionPatterns allowOpens chord tuning maxHeight =
   filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight
@@ -53,8 +51,8 @@ findPositionPatterns''' includeOpens chord tuning from maxHeight = sequencer $ f
                   | otherwise = (:[]) 
 
 findPositionPatterns'''' includeOpens chord tuning from maxHeight =
-    map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
-      tuning
+  map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
+    tuning
 
 positionInNoteable noteable stringTuning pos = any (superEquiv note) (newNotes noteable)
   where note = tuningAndPosToNote stringTuning pos
@@ -83,9 +81,7 @@ getPositionPatternMinAdjusted maxHeight positionPattern
   | otherwise = getPositionPatternMin positionPattern
 
 dropD = [D,A,D,G,B,E]
-
-standardTuning = [E,A,D,G,B,E]
-
 ukelele = [C,E,G,A]
+standardTuning = [E,A,D,G,B,E]
 
 superEquiv a b = equiv a b || equiv b a
