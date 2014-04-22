@@ -78,6 +78,7 @@ deepenListOfLists = map deepenList
 
 deepenList = map (:[])
 addEmpties = map ([]:)
+addEmptiesToEmpties xs = map (\x -> applyIf (null x) ([]:) x) xs
 
 findIndicess p xs ys = map (\x -> findIndices (p x) xs) ys
 

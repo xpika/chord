@@ -27,11 +27,12 @@ import Music.Instrument.Common (
  ,NewNotes
  )
 
-renderGuitarConcept :: (PositionPatternProgression a,NewNotes a) => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> [Char]
-renderGuitarConcept allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from =
+renderGuitarConcept :: (PositionPatternProgression a,NewNotes a) => Bool -> ControlAnnotation -> Bool -> Bool -> Bool -> [Note] -> a -> Int -> Int -> Bool -> [Char]
+renderGuitarConcept allowOpens controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning chord maxHeight from utilizeAllStrings =
   head $
     renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
-  where positionPatternProgressions = getPositionPatternProgressions allowOpens chord tuning maxHeight
+  where positionPatternProgressions = getPositionPatternProgressions allowOpens chord tuning maxHeight utilizeAllStrings
+        
 
 renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $

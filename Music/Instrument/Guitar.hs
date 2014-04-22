@@ -11,9 +11,11 @@ import Data.Maybe
 import Data.Char
 import Control.Monad
 import qualified Data.Set
+import qualified Data.Map
 
 import Music.Instrument.Piano
 import Music.Instrument.Common
+import qualified Debug.Trace
 
 class PositionPatternProgression a where
   requiresSequence :: a -> Bool
@@ -27,17 +29,17 @@ instance PositionPatternProgression Scale where
 instance PositionPatternProgression Note where 
   requiresSequence _ = False
 
-getPositionPatternProgressions allowOpens note tuning maxHeight = filter (not . null) $ findPositionPatterns allowOpens note tuning maxHeight  
+getPositionPatternProgressions allowOpens note tuning maxHeight utilizeAllStrings= filter (not . null) $ findPositionPatterns allowOpens note tuning maxHeight utilizeAllStrings
 
-findPositionPatterns allowOpens chord tuning maxHeight =
-  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight
+findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings =
+  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings
         
-findPositionPatterns' allowOpens chord tuning maxHeight =
-  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight) [0..])
+findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings =
+  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings) [0..])
 
-findPositionPatterns'' allowOpens chord tuning from maxHeight = applyIf allowOpens (nub . (++) openPatterns) patterns
-  where patterns = findPositionPatterns''' False chord tuning from maxHeight
-        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight)
+findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings = applyIf allowOpens (nub . (++) openPatterns) patterns
+  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings
+        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings)
 
 isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
 
@@ -46,9 +48,20 @@ getPositionPatternSpannedFrets positionPattern maxHeight
   | otherwise = (uncurry enumFromTo) (getPositionPatternRange positionPattern)
   where prunedPositionPattern = map (filter (not.(==0)))  positionPattern
 
-findPositionPatterns''' includeOpens chord tuning from maxHeight = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight
-  where sequencer | requiresSequence chord = filter ( not . null . concat ).  map (filter ( not.  null)) . sequence . applyIf False addEmpties . deepenListOfLists
+findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrings = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight
+  where sequencer | requiresSequence chord =   filter ( not . null . concat )   
+                                             {- .  (\x -> map (\y -> filter (isSuper x y) y) x )  -}
+                                             . sequence 
+                                             . applyIf (utilizeAllStrings == False) addEmptiesToEmpties 
+                                             . deepenListOfLists
                   | otherwise = (:[]) 
+        removeEmpties x =  map (filter ( not. null)) x
+        isSuper x y z = Debug.Trace.traceShow ( show ( map (zip [1..]) x)  )  True 
+   --       where blah = ((map snd) $ (zip [1..]) (concat x) )
+
+
+listToListMapBy f xs = foldr (\x y -> Data.Map.insertWith (++) (f x) [x] y) Data.Map.empty xs
+unsortedGroupBy' f xs = Data.Map.elems $ listToListMapBy f xs
 
 findPositionPatterns'''' includeOpens chord tuning from maxHeight =
   map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
