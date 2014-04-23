@@ -52,7 +52,7 @@ findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrin
   where sequencer | requiresSequence chord =   filter ( not . null . concat )   
                                              {- .  (\x -> map (\y -> filter (isSuper x y) y) x )  -}
                                              . sequence 
-                                             . applyIf (utilizeAllStrings == False) addEmptiesToEmpties 
+                                             . addEmpties
                                              . deepenListOfLists
                   | otherwise = (:[]) 
         removeEmpties x =  map (filter ( not. null)) x
