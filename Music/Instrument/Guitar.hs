@@ -29,8 +29,6 @@ instance PositionPatternProgression Scale where
 instance PositionPatternProgression Note where 
   requiresSequence _ = False
 
-getPositionPatternProgressions allowOpens note tuning maxHeight utilizeAllStrings selectionMask = filter (not . null) $ findPositionPatterns allowOpens note tuning maxHeight utilizeAllStrings selectionMask
-
 findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings selectionMask =
   filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings selectionMask
         
@@ -50,16 +48,14 @@ getPositionPatternSpannedFrets positionPattern maxHeight
 
 findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrings selectionMask = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
   where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
+   											 . nub
                                              . (if utilizeAllStrings then (filter (\x -> length (concat x) == length tuning))
-											                         else (filter (\x -> length (concat x) == length (concat v))))
+											                         else (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v))))
                                              . sequence 
-                                             . addEmpties
-                                             . deepenListOfLists ) v)
+                                             . addEmpties) (Debug.Trace.traceShow (show v) v))
+									         . applyIf (not (null selectionMask)) (\j -> (zipWith (\c a -> if c then a else [[]]) selectionMask j))
+                                             . deepenListOfLists 
                   | otherwise = (:[])
-        removeEmpties x =  map (filter ( not. null)) x
-        isSuper x y z = Debug.Trace.traceShow ( show ( map (zip [1..]) x)  )  True 
-   --      where blah = ((map snd) $ (zip [1..]) (concat x) )
-
 
 listToListMapBy f xs = foldr (\x y -> Data.Map.insertWith (++) (f x) [x] y) Data.Map.empty xs
 unsortedGroupBy' f xs = Data.Map.elems $ listToListMapBy f xs
@@ -93,6 +89,8 @@ getPositionMultiPatternMinAdjusted maxHeight  = getPositionPatternMinAdjusted ma
 getPositionPatternMinAdjusted maxHeight positionPattern
   | isOpened maxHeight positionPattern =  head . drop 1 . nub . sort . concat  $ positionPattern
   | otherwise = getPositionPatternMin positionPattern
+
+lightChord = [False,False,False,True,True,True]
 
 dropD = [D,A,D,G,B,E]
 ukelele = [C,E,G,A]

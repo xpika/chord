@@ -14,7 +14,6 @@ import qualified Data.Set
 import Music.Instrument.Guitar (
    findPositionPatterns
   ,getPositionMultiPatternMin
-  ,getPositionPatternProgressions
   ,PositionPatternProgression
   ,getPositionMultiPatternMinAdjusted
   ,getPositionPatternMinAdjusted
@@ -55,7 +54,7 @@ renderGuitarConcept
  selectionMask =
     head $
      renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
- where positionPatternProgressions = getPositionPatternProgressions allowOpens chord tuning maxHeight utilizeAllStrings selectionMask
+ where positionPatternProgressions = findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings selectionMask
         
 
 renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =

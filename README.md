@@ -51,11 +51,21 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ------
 ----4-
 01---5
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False lightChord)
+Fret: 3
+---bDG
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False [])
 Fret: 1
 --eaC-
 ------
 -C----
+a----a
+
+Fret: 1
+--ea--
+------
+-C----
+a---ea
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True [])
 000=
 ----

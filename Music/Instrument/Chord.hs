@@ -22,6 +22,8 @@ module Music.Instrument.Chord
  ,
  ukelele
  ,
+ lightChord
+ ,
  findPositionPatterns
  ,
  getPositionPatternRange

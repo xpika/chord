@@ -17,6 +17,7 @@ expressions = [
   "renderGuitarConcept True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1 True []"
  ,"renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True []"
  ,"renderGuitarConcept False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0 True []"
+ ,"renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False lightChord"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False []"
  ,"renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True []"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale B) 4 0 True []"
