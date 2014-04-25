@@ -94,7 +94,6 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
         maxHeight' = getPositionPatternHeight positionPattern
         minHeight' = getPositionPatternHeight positionPattern
         positionPatternSpannedFrets = getPositionPatternSpannedFrets positionPattern maxHeight
-        minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
         tuning' = reverse tuning
 
 firstGap [] = Nothing

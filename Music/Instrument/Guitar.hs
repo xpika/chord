@@ -52,7 +52,7 @@ findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrin
                                              . (if utilizeAllStrings then (filter (\x -> length (concat x) == length tuning))
 											                         else (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v))))
                                              . sequence 
-                                             . addEmpties) (Debug.Trace.traceShow (show v) v))
+                                             . addEmpties) (v))
 									         . applyIf (not (null selectionMask)) (\j -> (zipWith (\c a -> if c then a else [[]]) selectionMask j))
                                              . deepenListOfLists 
                   | otherwise = (:[])
