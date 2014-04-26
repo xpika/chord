@@ -63,13 +63,7 @@ Fret: 1
 --eaC-
 ------
 -C----
-a----a
-
-Fret: 1
---ea--
 ------
--C----
-a---ea
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True [])
 000=
 ----

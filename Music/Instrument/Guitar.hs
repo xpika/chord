@@ -47,19 +47,26 @@ getPositionPatternSpannedFrets positionPattern maxHeight
   isOpened' = isOpened maxHeight positionPattern
   prunedPositionPattern = map (filter (not.(==0))) positionPattern
 		
-		
 isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
 
-findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrings selectionMask = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
-  where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
-   											 . nub
-                                             . (if utilizeAllStrings then (filter (\x -> length (concat x) == length tuning))
-											                         else (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v))))
-                                             . sequence 
-                                             . addEmpties) (v))
-									         . applyIf (not (null selectionMask)) (\j -> (zipWith (\c a -> if c then a else [[]]) selectionMask j))
-                                             . deepenListOfLists 
-                  | otherwise = (:[])
+findPositionPatterns''' 
+  includeOpens
+  chord
+  tuning
+  from
+  maxHeight
+  utilizeAllStrings
+  selectionMask 
+    = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
+    where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
+                                               . (if utilizeAllStrings then (filter (\x -> length (concat x) == length tuning))
+											                           else (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v))))
+                                               . sequence
+											   ) v)
+									           . applyIf (not (null selectionMask)) (\j -> (zipWith (\c a -> if c then a else [[]]) selectionMask j))
+											   . addEmpties
+                                               . deepenListOfLists 
+                    | otherwise = (:[])
 
 listToListMapBy f xs = foldr (\x y -> Data.Map.insertWith (++) (f x) [x] y) Data.Map.empty xs
 unsortedGroupBy' f xs = Data.Map.elems $ listToListMapBy f xs
