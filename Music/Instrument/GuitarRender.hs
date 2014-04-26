@@ -10,6 +10,7 @@ import Data.Maybe
 import Data.Char
 import Control.Monad
 import qualified Data.Set
+import Debug.Trace
 
 import Music.Instrument.Guitar (
    findPositionPatterns
@@ -83,15 +84,14 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
         overlayStringRight x y = map last $ Data.List.transpose [x,y]
         fretAnnotationPadding = take maximumFretAnnotationLength (repeat ' ')
         maximumFretAnnotationLength = maximum . map length $ fretAnnotations'
-        fretAnnotations' = map show $ take (maxHeight'+1) [0..]
+        fretAnnotations' = map show $ take (maxHeight+1) [0..]
         guitarStringTexts'' =
           map (\(pos,stringIndex) 
-            -> renderGuitarString' stringIndex orientationVertical controlAnnotation from maxHeight' pos (tuning'!!stringIndex) positionPatternSpannedFrets)
+            -> renderGuitarString stringIndex orientationVertical controlAnnotation from pos (tuning'!!stringIndex) positionPatternSpannedFrets)
               (zip (reverse positionPattern) stringIndicies)
         stringIndicies | firstTuningFirst = [0..]
                        | otherwise = [guitarStringCount-1,guitarStringCount-2..]
         guitarStringCount = length positionPattern
-        maxHeight' = getPositionPatternHeight positionPattern
         minHeight' = getPositionPatternHeight positionPattern
         positionPatternSpannedFrets = getPositionPatternSpannedFrets positionPattern maxHeight
         tuning' = reverse tuning
@@ -99,9 +99,16 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)
 
-renderGuitarString' stringIndex orientationVertical controlAnnotation from max positionIndices stringTuning positionPatternSpannedFrets   = 
+renderGuitarString 
+ stringIndex 
+ orientationVertical
+ controlAnnotation
+ from
+ positionIndices
+ stringTuning
+ positionPatternSpannedFrets = 
   applyIf (not (positionPatternsGap == Nothing)) (addGap positionPatternsGap)
-    $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation)  positionPatternSpannedFrets
+    $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) positionPatternSpannedFrets
   where positionPatternsGap = firstGap positionPatternSpannedFrets 
         addGap (Just n) str = insertAt n (gapChar orientationVertical) str
 

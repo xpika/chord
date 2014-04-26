@@ -17,20 +17,20 @@ $ghci
 Prelude>:m + Music.Instrument.Chord 
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1 True [])
 Fret: 3
-|S3--
-|S-4-
-0S---
-|S--5
-|S3--
-|S3--
+|S3---
+|S-4--
+0S----
+|S--5-
+|S3---
+|S3---
 
 Fret: 3
-3--
--4-
---5
---5
-3--
-3--
+3---
+-4--
+--5-
+--5-
+3---
+3---
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True [])
 =o====
 ----**
@@ -41,6 +41,7 @@ Fret: 1
 ----**
 ---*--
 ***---
+------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0 True [])
 =123==
 ------
@@ -54,6 +55,9 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False lightChord)
 Fret: 3
 ---bDG
+------
+------
+------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False [])
 Fret: 1
 --eaC-

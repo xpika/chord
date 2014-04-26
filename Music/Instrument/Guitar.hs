@@ -39,12 +39,16 @@ findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings 
   where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings selectionMask
         openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings selectionMask)
 
-isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
-
 getPositionPatternSpannedFrets positionPattern maxHeight
-  | isOpened maxHeight positionPattern = 0 : ((uncurry enumFromTo) (getPositionPatternRange prunedPositionPattern))
-  | otherwise = (uncurry enumFromTo) (getPositionPatternRange positionPattern)
-  where prunedPositionPattern = map (filter (not.(==0))) positionPattern
+  = applyIf isOpened' (0:) ((uncurry enumFromTo) range)
+  where 
+  range | isOpened' = (getPositionPatternMin prunedPositionPattern,getPositionPatternMin prunedPositionPattern + maxHeight)
+        | otherwise = (getPositionPatternMin positionPattern,getPositionPatternMin positionPattern + maxHeight)
+  isOpened' = isOpened maxHeight positionPattern
+  prunedPositionPattern = map (filter (not.(==0))) positionPattern
+		
+		
+isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
 
 findPositionPatterns''' includeOpens chord tuning from maxHeight utilizeAllStrings selectionMask = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
   where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
