@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Music.Instrument.Common where 
 
 import Music.Diatonic
@@ -22,6 +24,9 @@ instance NewNotes Scale where
 
 instance NewNotes Note where
   newNotes n = [n]
+
+instance NewNotes [Note] where
+  newNotes n = n
 
 data ControlAnnotation = AnnotateNote | AnnotatePositionVertical | AnnotatePositionHorizontal | AnnotateMarking
 

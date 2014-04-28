@@ -1,4 +1,6 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Music.Instrument.Guitar where
 
 import Music.Diatonic
@@ -29,15 +31,18 @@ instance PositionPatternProgression Scale where
 instance PositionPatternProgression Note where 
   requiresSequence _ = False
 
-findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings selectionMask =
-  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings selectionMask
-        
-findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings selectionMask =
-  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings selectionMask) [0..])
+instance PositionPatternProgression [Note] where 
+  requiresSequence _ = True
 
-findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings selectionMask = applyIf allowOpens (nub . (++) openPatterns) patterns
-  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings selectionMask
-        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings selectionMask)
+findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask =
+  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask
+        
+findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask =
+  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask) [0..])
+
+findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask = applyIf allowOpens (nub . (++) openPatterns) patterns
+  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask
+        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask)
 
 getPositionPatternSpannedFrets positionPattern maxHeight
   = applyIf isOpened' (0:) ((uncurry enumFromTo) range)
@@ -46,7 +51,7 @@ getPositionPatternSpannedFrets positionPattern maxHeight
         | otherwise = (getPositionPatternMin positionPattern,getPositionPatternMin positionPattern + maxHeight)
   isOpened' = isOpened maxHeight positionPattern
   prunedPositionPattern = map (filter (not.(==0))) positionPattern
-		
+        
 isOpened maxHeight positionPattern = (>maxHeight) . getPositionPatternHeight $ positionPattern
 
 findPositionPatterns''' 
@@ -56,18 +61,29 @@ findPositionPatterns'''
   from
   maxHeight
   utilizeAllStrings
-  --rootNoteFirst
+  rootNoteLowest
   selectionMask 
     = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
-    where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
-                                               . (if utilizeAllStrings then (filter (\x -> length (concat x) == length tuning))
-											                           else (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v))))
-                                               . sequence
-											   ) v)
-									           . applyIf (not (null selectionMask)) (\j -> (zipWith (\c a -> if c then a else [[]]) selectionMask j))
-											   . addEmpties
-                                               . deepenListOfLists 
-                    | otherwise = (:[])
+    where 
+      sequencer | requiresSequence chord
+        = ( \v -> (  filter ( not . null . concat )  
+		           . (applyIf rootNoteLowest (filter (\x -> take 1 (concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == take 1 (newNotes chord)) ))
+                   . (case (utilizeAllStrings,selectionMask) of 
+                            (True,_) -> (filter (\x -> length (concat x) == length tuning))
+                            (False,[]) -> (filter (\x -> length (concat x) == length (filter (not . (==[[]])) v)))
+                            (False,selectionMask') -> filter (\x -> 
+							  or (
+							    map (\selectionMask'' ->
+							      all (\(a,b) -> if a then b /= [] else b == []) (zip selectionMask'' x)
+							    ) selectionMask'
+							  )
+							)
+                      )
+                   . sequence
+                   ) v) 
+                   . addEmpties
+                   . deepenListOfLists 
+                | otherwise = (:[])
 
 findPositionPatterns'''' includeOpens chord tuning from maxHeight =
   map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
@@ -100,10 +116,14 @@ getPositionPatternMinAdjusted maxHeight positionPattern
   | isOpened maxHeight positionPattern =  head . drop 1 . nub . sort . concat  $ positionPattern
   | otherwise = getPositionPatternMin positionPattern
 
-lightChord = [False,False,False,True,True,True]
+lightChord = [[False,False,False,True,True,True]]
+powerChord = [
+              [True,True,True,False,False,False]
+			 ,[False,True,True,True,False,False]
+           ]
 
 dropD = [D,A,D,G,B,E]
 ukelele = [C,E,G,A]
 standardTuning = [E,A,D,G,B,E]
-
+fifthChord n = [n , applyNTimes sharp 7 n]
 superEquiv a b = equiv a b || equiv b a

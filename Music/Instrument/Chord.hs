@@ -24,6 +24,10 @@ module Music.Instrument.Chord
  ,
  lightChord
  ,
+ powerChord
+ ,
+ fifthChord
+ ,
  findPositionPatterns
  ,
  getPositionPatternRange

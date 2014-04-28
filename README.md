@@ -15,7 +15,7 @@ Example:
 $ghci
 
 Prelude>:m + Music.Instrument.Chord 
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1 True False [])
 Fret: 3
 |S3---
 |S-4--
@@ -31,7 +31,7 @@ Fret: 3
 --5-
 3---
 3---
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True False [])
 =o====
 ----**
 ---*--
@@ -42,7 +42,7 @@ Fret: 1
 ---*--
 ***---
 ------
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0 True False [])
 =234==
 ------
 ----5-
@@ -52,19 +52,25 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ------
 ----5-
 12---6
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False lightChord)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False False lightChord)
 Fret: 3
 ---bDG
 ------
 ------
 ------
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateMarking False True True standardTuning (fifthChord (sharp A)) 4 0 False True powerChord)
+Fret: 1
+-*----
+------
+--**--
+------
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False False [])
 Fret: 1
 --eaC-
 ------
 -C----
 ------
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True False [])
 000=
 ----
 ----
@@ -74,12 +80,12 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ----
 ----
 -3-3
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale B) 4 0 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale B) 4 0 True False [])
 E===BE
 -bea--
 gBE-dg
 ---b--
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote True True True standardTuning E 13 0 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote True True True standardTuning E 13 0 True False [])
  0E====E
  1------
  2--E---
@@ -99,12 +105,12 @@ Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 0 AnnotateMarking (
 | |_||_| | |_||_||_| |
 |* |  |* |  |* |  |  |
 |__|__|__|__|__|__|__|
-Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 1 AnnotateNote (majorScale A))
+Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 0 AnnotateMarking (majorChord C))
  ____________________ ____________________ 
 | | || | | | || || | | |d|| | | |g||a|| | |
 | |_||_| | |_||_||_| | |_||_| | |_||_||_| |
 |  |  |  |  |  |A |B |  |D |E |  |  |  |  |
 |__|__|__|__|__|__|__|__|__|__|__|__|__|__|
-Prelude Music.Instrument.Chord> putStrLn (head $ findPositionPatterns True (majorChord C) standardTuning 4 True [])
+Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 1 AnnotateNote (majorScale A))
 [[[0],[3],[2],[0],[1],[0]],[[0],[3],[2],[0],[1],[3]],[[3],[3],[2],[0],[1],[0]],[[3],[3],[2],[0],[1],[3]]]
 ```

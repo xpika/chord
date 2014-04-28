@@ -27,7 +27,6 @@ import Music.Instrument.Common (
  )
  
 maxFretHeight = 30
- 
 
 renderGuitarConcept 
  :: (PositionPatternProgression a,NewNotes a)
@@ -41,43 +40,45 @@ renderGuitarConcept
  -> Int 
  -> Int
  -> Bool 
- -> [Bool]
+ -> Bool
+ -> [[Bool]]
  -> [Char] 
 renderGuitarConcept 
  allowOpens 
  controlAnnotation 
  annotateFrets
- firstTuningFirst
+ firstTuningLast
  orientationVertical
  tuning 
  chord
  maxHeight
  from
  utilizeAllStrings 
+ rootNoteLowest
  selectionMask =
     head $
-     renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternProgressions
- where positionPatternProgressions = take maxFretHeight $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings selectionMask
+     renderGuitarChord' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions
+ where positionPatternProgressions = take maxFretHeight $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask
        
-renderGuitarChord' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight from positionPatternsProgressions =
+renderGuitarChord' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
-    map (renderGuitarChord'' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight) positionPatternsProgressions
+    map (renderGuitarChord'' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight) positionPatternsProgressions
 
-renderGuitarChord'' controlAnnotation annotateFrets firstTuningFirst orientationVertical tuning maxHeight positionPatterns =
+renderGuitarChord'' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight positionPatterns =
    concat $ intersperse "\n" $ 
-      renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns
+      renderPositionPatternsRange annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns
 
-renderPositionPatternsRange annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
-  map (renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
+renderPositionPatternsRange annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
+  map (renderPositionPattern annotateFrets firstTuningLast orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
   where minPosition = getPositionMultiPatternMin positionPatterns'
 
-renderPositionPattern annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
-   heading $ unlines $ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern
+renderPositionPattern annotateFrets firstTuningLast orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
+   heading $ unlines $ renderPositionPattern' annotateFrets firstTuningLast orientationVertical controlAnnotation tuning from maxHeight positionPattern
   where minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
         heading | minPositionAdjusted /= 0 = (++) ("Fret: " ++ show minPositionAdjusted ++ "\n")
                 | otherwise = id
 
-renderPositionPattern' annotateFrets firstTuningFirst orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
+renderPositionPattern' annotateFrets firstTuningLast orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
   guitarStringTexts
   where guitarStringTexts = applyIf orientationVertical (map reverse . Data.List.transpose) guitarStringTexts'
         guitarStringTexts' = applyIf annotateFrets (++ (Data.List.transpose fretAnnotations)) guitarStringTexts''
@@ -89,7 +90,7 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
         guitarStringTexts'' =
           map (\(pos,stringIndex) 
             -> renderGuitarString 
-			     (if firstTuningFirst then stringIndex else compliment (length tuning) stringIndex)
+			     (if firstTuningLast then stringIndex else compliment (length tuning) stringIndex)
 				 orientationVertical
 				 controlAnnotation 
 				 from 
