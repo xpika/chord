@@ -89,7 +89,7 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
         guitarStringTexts'' =
           map (\(pos,stringIndex) 
             -> renderGuitarString 
-			     stringIndex
+			     (if firstTuningFirst then stringIndex else compliment (length tuning) stringIndex)
 				 orientationVertical
 				 controlAnnotation 
 				 from 
@@ -98,15 +98,15 @@ renderPositionPattern' annotateFrets firstTuningFirst orientationVertical contro
 				 positionPatternSpannedFrets
 			   )
               (zip (reverse positionPattern) stringIndicies)
-        stringIndicies | firstTuningFirst = [0..]
-                       | otherwise = [guitarStringCount-1,guitarStringCount-2..]
+        stringIndicies = [0..]
         guitarStringCount = length positionPattern
-        minHeight' = getPositionPatternHeight positionPattern
         positionPatternSpannedFrets = getPositionPatternSpannedFrets positionPattern maxHeight
         tuning' = reverse tuning
 
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)
+
+compliment m n = m - n
 
 renderGuitarString 
  stringIndex 
@@ -143,5 +143,3 @@ fretChar orientationVertical _ | orientationVertical = '-'
 
 fingeringCharUnannotated 0 = 'o'
 fingeringCharUnannotated _ = '*'
-
-rotateText =  unlines . Data.List.transpose . lines

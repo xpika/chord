@@ -43,15 +43,15 @@ Fret: 1
 ***---
 ------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePositionHorizontal False False True (reverse standardTuning) (majorChord G) 4 0 True [])
-=123==
+=234==
 ------
-----4-
-0----5
+----5-
+1----6
 
-==23==
+==34==
 ------
-----4-
-01---5
+----5-
+12---6
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False lightChord)
 Fret: 3
 ---bDG
