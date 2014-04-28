@@ -56,6 +56,7 @@ findPositionPatterns'''
   from
   maxHeight
   utilizeAllStrings
+  --rootNoteFirst
   selectionMask 
     = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
     where sequencer | requiresSequence chord = ( \v -> ( filter ( not . null . concat )  
@@ -67,9 +68,6 @@ findPositionPatterns'''
 											   . addEmpties
                                                . deepenListOfLists 
                     | otherwise = (:[])
-
-listToListMapBy f xs = foldr (\x y -> Data.Map.insertWith (++) (f x) [x] y) Data.Map.empty xs
-unsortedGroupBy' f xs = Data.Map.elems $ listToListMapBy f xs
 
 findPositionPatterns'''' includeOpens chord tuning from maxHeight =
   map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
@@ -93,9 +91,10 @@ getPositionPatternMin = minimum . concat
 getPositionPatternMax = maximum . concat
 
 getPositionMultiPatternMax = getPositionPatternMax . concat
+
 getPositionMultiPatternMin = getPositionPatternMin . concat
 
-getPositionMultiPatternMinAdjusted maxHeight  = getPositionPatternMinAdjusted maxHeight   . concat
+getPositionMultiPatternMinAdjusted maxHeight = getPositionPatternMinAdjusted maxHeight . concat
 
 getPositionPatternMinAdjusted maxHeight positionPattern
   | isOpened maxHeight positionPattern =  head . drop 1 . nub . sort . concat  $ positionPattern
