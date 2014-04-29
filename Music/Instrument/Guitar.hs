@@ -47,8 +47,8 @@ findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings 
 getPositionPatternSpannedFrets positionPattern maxHeight
   = applyIf isOpened' (0:) ((uncurry enumFromTo) range)
   where
-  range | isOpened' = (getPositionPatternMin prunedPositionPattern,getPositionPatternMin prunedPositionPattern + maxHeight)
-        | otherwise = (getPositionPatternMin positionPattern,getPositionPatternMin positionPattern + maxHeight)
+  range = if isOpened' then (getPositionPatternMin prunedPositionPattern,getPositionPatternMin prunedPositionPattern + maxHeight)
+                       else (getPositionPatternMin positionPattern,getPositionPatternMin positionPattern + maxHeight)
   isOpened' = isOpened maxHeight positionPattern
   prunedPositionPattern = map (filter (not.(==0))) positionPattern
         
@@ -112,9 +112,9 @@ getPositionMultiPatternMin = getPositionPatternMin . concat
 
 getPositionMultiPatternMinAdjusted maxHeight = getPositionPatternMinAdjusted maxHeight . concat
 
-getPositionPatternMinAdjusted maxHeight positionPattern
-  | isOpened maxHeight positionPattern =  head . drop 1 . nub . sort . concat  $ positionPattern
-  | otherwise = getPositionPatternMin positionPattern
+getPositionPatternMinAdjusted maxHeight positionPattern =
+  if isOpened maxHeight positionPattern then head . drop 1 . nub . sort . concat $ positionPattern
+                                        else getPositionPatternMin positionPattern
 
 lightChord = [[False,False,False,True,True,True]]
   
