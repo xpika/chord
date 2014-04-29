@@ -119,13 +119,20 @@ renderPositionPattern'
   overlayStringRight x y = map last $ Data.List.transpose [x,y]
   fretAnnotationPadding = take maximumFretAnnotationLength (repeat ' ')
   maximumFretAnnotationLength = maximum . map length $ fretAnnotations'
-  fretAnnotations' = map show positionPatternSpannedFrets
+  fretAnnotations' = concat $ intersperse [" "] $ map (map show) $ (consec positionPatternSpannedFrets)
   stringIndicies = [0..]
   guitarStringCount = length positionPattern
   positionPatternSpannedFrets = if renderAllFrets then [0..maximum positionPatternSpannedFrets']
                                                   else positionPatternSpannedFrets'
   positionPatternSpannedFrets' = getPositionPatternSpannedFrets positionPattern maxHeight
   tuning' = reverse tuning
+
+
+consec (x:xs) = consec' [x] xs
+consec [] = [] 
+consec' buf@(_:_) (x:xs) = if x - last buf == 1 then consec' (buf++[x]) xs
+                                                else buf : consec' [x] (xs)
+consec' buf [] = [buf]
 
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)
