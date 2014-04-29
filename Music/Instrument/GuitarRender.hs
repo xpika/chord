@@ -57,16 +57,16 @@ renderGuitarConcept
  rootNoteLowest
  selectionMask =
     head $
-     renderGuitarChord' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions
+    renderGuitarChord' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions
  where positionPatternProgressions = take maxFretHeight $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask
        
 renderGuitarChord' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
   drop from $
-    map (renderGuitarChord'' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight) positionPatternsProgressions
+  map (renderGuitarChord'' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight) positionPatternsProgressions
 
 renderGuitarChord'' controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight positionPatterns =
-   concat $ intersperse "\n" $ 
-      renderPositionPatternsRange annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns
+  concat $ intersperse "\n" 
+  $ renderPositionPatternsRange annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns
 
 renderPositionPatternsRange annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
   map (renderPositionPattern annotateFrets firstTuningLast orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
