@@ -34,7 +34,7 @@ Fret: 3
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept True AnnotatePositionVertical True True True standardTuning (minorChord C) 4 1 True False [] False)
 Fret: 3
 0===0==
- ~~~~~~
+ ^^^^^^
 333---3
 4----4-
 5--5---

@@ -155,7 +155,7 @@ renderGuitarString
  positionPatternsGap = firstGap positionPatternSpannedFrets 
  addGap (Just n) str = insertAt n (gapChar orientationVertical) str
 
-gapChar orientationVertical | orientationVertical = '~'
+gapChar orientationVertical | orientationVertical = '^'
                             | otherwise = 'S'
 
 char stringIndex orientationVertical stringTuning positionIndices controlAnnotation index 
