@@ -44,7 +44,8 @@ renderGuitarConcept
  -> Bool
  -> [[Bool]]
  -> Bool
- -> [Char] 
+ -> Bool
+ -> String
 renderGuitarConcept 
  allowOpens 
  controlAnnotation 
@@ -59,13 +60,14 @@ renderGuitarConcept
  rootNoteLowest
  selectionMask
  renderAllFrets 
+ utilizeAllNotes
  =
    head
  $ renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions 
  where 
  positionPatternProgressions = 
      take maxFretHeight 
-   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask
+   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
        
 renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
     drop from

@@ -34,15 +34,16 @@ instance PositionPatternProgression Note where
 instance PositionPatternProgression [Note] where
   requiresSequence _ = True
 
-findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask =
-  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask
+findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
+  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
         
-findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask =
-  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask) [0..])
+findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
+  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes) [0..])
 
-findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask = applyIf allowOpens (nub . (++) openPatterns) patterns
-  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask
-        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask)
+findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes = 
+  applyIf allowOpens (nub . (++) openPatterns) patterns
+  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
+        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes)
 
 getPositionPatternSpannedFrets positionPattern maxHeight
   = applyIf isOpened' (0:) ((uncurry enumFromTo) range)
@@ -63,20 +64,22 @@ findPositionPatterns'''
   utilizeAllStrings
   rootNoteLowest
   selectionMask 
+  utilizeAllNotes
     = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
     where
       sequencer | requiresSequence chord
         = (\v -> (   filter ( not . null . concat )  
                    . (\x -> filter (\a -> length (strip a) == maximum (map length (map strip x))) x)
-				   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
+		   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
+                   . applyIf utilizeAllNotes (filter (\x -> (sort $ concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == sort (newNotes chord)))
                    . applyIf rootNoteLowest (filter (\x -> take 1 (concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == take 1 (newNotes chord)))
-				   . applyIf (not utilizeAllStrings && (not . null $ selectionMask)) (filter (\x ->
+		   . applyIf (not utilizeAllStrings && (not . null $ selectionMask)) (filter (\x ->
                        or (
                           map (\selectionMask'' ->
                             all (\(a,b) -> if a then b /= [] else b == []) (zip selectionMask'' x)
                          ) selectionMask
                        )
-				     ))
+		     ))
                    . sequence
                    ) v) 
                    . addEmpties
@@ -116,7 +119,10 @@ getPositionPatternMinAdjusted maxHeight positionPattern =
   if isOpened maxHeight positionPattern then head . drop 1 . nub . sort . concat $ positionPattern
                                         else getPositionPatternMin positionPattern
 
-lightChord = [[False,False,False,True,True,True]]
+lightChord = [
+   [False,False,True,True,True,True]
+  ,[False,False,False,True,True,True]
+ ]
   
 powerChord = [
               [True,True,True,False,False,False]
@@ -128,3 +134,4 @@ ukelele = [C,E,G,A]
 standardTuning = [E,A,D,G,B,E]
 fifthChord n = [n , applyNTimes sharp 7 n]
 superEquiv a b = equiv a b || equiv b a
+
