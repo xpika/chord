@@ -66,7 +66,7 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ------
 ----5-
 12---6
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (sus4 $ dominant7thChord G) 4 2 False True [] False True)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (sus4 $ dominant7thChord G) 4 3 False True [] False True)
 Fret: 3
 GCF-DG
 ------
@@ -78,13 +78,25 @@ G-F-DG
 ------
 -D-C--
 ------
+
+Fret: 3
+G-F--G
+------
+-D-C--
+----F-
+
+Fret: 3
+G----G
+------
+-DGC--
+----F-
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False False lightChord False False)
 Fret: 3
 ---bDG
 ------
 ------
 ------
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minor7thChord A) 4 1 False False lightChord False True)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minor7thChord A) 4 2 False False lightChord False True)
 Fret: 5
 --GCEA
 ------

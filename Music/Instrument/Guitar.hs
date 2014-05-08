@@ -38,7 +38,7 @@ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNot
   filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
         
 findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
-  scanl1 (flip (\\)) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes) [0..])
+  ( {- scanl1 (flip (\\)) -} id) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes) [0..])
 
 findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes = 
   applyIf allowOpens (nub . (++) openPatterns) patterns
