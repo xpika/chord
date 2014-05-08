@@ -66,6 +66,18 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ------
 ----5-
 12---6
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (sus4 $ dominant7thChord G) 4 2 False True [] False True)
+Fret: 3
+GCF-DG
+------
+---C--
+------
+
+Fret: 3
+G-F-DG
+------
+-D-C--
+------
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False False lightChord False False)
 Fret: 3
 ---bDG
@@ -106,12 +118,11 @@ Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotatePosi
 ----
 ----
 -3-3
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale B) 5 0 True False [] False False)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale B) 4 0 True False [] False False)
 E===BE
 -bea--
 gBE-dg
 ---b--
-adgBea
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote True True True standardTuning E 13 0 True False [] False False)
  0E====E
  1------

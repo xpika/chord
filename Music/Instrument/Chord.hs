@@ -33,6 +33,10 @@ module Music.Instrument.Chord
  getPositionPatternRange
  ,
  PositionPatternProgression (..)
+ ,
+ sus2
+ ,
+ sus4
 )
 where
 

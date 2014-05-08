@@ -32,7 +32,7 @@ instance PositionPatternProgression Note where
   requiresSequence _ = False
 
 instance PositionPatternProgression [Note] where
-  requiresSequence _ = True
+  requiresSequence _ = True 
 
 findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
   filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
@@ -71,7 +71,7 @@ findPositionPatterns'''
         = (\v -> (   filter ( not . null . concat )  
                    . (\x -> filter (\a -> length (strip a) == maximum (map length (map strip x))) x)
 		   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
-                   . applyIf utilizeAllNotes (filter (\x -> (sort $ concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == sort (newNotes chord)))
+                   . applyIf utilizeAllNotes (filter (\x -> (nub $ sort $ concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == (nub $ sort (newNotes chord))))
                    . applyIf rootNoteLowest (filter (\x -> take 1 (concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == take 1 (newNotes chord)))
 		   . applyIf (not utilizeAllStrings && (not . null $ selectionMask)) (filter (\x ->
                        or (
@@ -133,5 +133,11 @@ dropD = [D,A,D,G,B,E]
 ukelele = [C,E,G,A]
 standardTuning = [E,A,D,G,B,E]
 fifthChord n = [n , applyNTimes sharp 7 n]
+
+sus2 chord = (x:canonize(flat(flat y)):xs)
+  where (x:y:xs) = newNotes chord
+sus4 chord = (x:canonize(sharp y):xs)
+  where (x:y:xs) = newNotes chord
+
 superEquiv a b = equiv a b || equiv b a
 
