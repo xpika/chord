@@ -45,6 +45,7 @@ renderGuitarConcept
  -> [[Bool]]
  -> Bool
  -> Bool
+ -> Bool
  -> String
 renderGuitarConcept 
  allowOpens 
@@ -61,13 +62,14 @@ renderGuitarConcept
  selectionMask
  renderAllFrets 
  utilizeAllNotes
+ strictIntervals
  =
    head
  $ renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions 
  where 
  positionPatternProgressions = 
      take maxFretHeight 
-   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
+   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes strictIntervals
        
 renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
     drop from
@@ -135,6 +137,8 @@ consec [] = []
 consec' buf@(_:_) (x:xs) = if x - last buf == 1 then consec' (buf++[x]) xs
                                                 else buf : consec' [x] (xs)
 consec' buf [] = [buf]
+
+
 
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)

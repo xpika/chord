@@ -25,6 +25,9 @@ class PositionPatternProgression a where
 instance PositionPatternProgression Chord where
   requiresSequence _ = True
 
+instance PositionPatternProgression NewScale where
+  requiresSequence _ = False
+
 instance PositionPatternProgression Scale where 
   requiresSequence _ = False
 
@@ -34,16 +37,102 @@ instance PositionPatternProgression Note where
 instance PositionPatternProgression [Note] where
   requiresSequence _ = True 
 
-findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
-  filter (not . null) $ findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
-        
-findPositionPatterns' allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes =
-  ( {- scanl1 (flip (\\)) -} id) (map (\x-> findPositionPatterns'' allowOpens chord tuning x maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes) [0..])
 
-findPositionPatterns'' allowOpens chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes = 
-  applyIf allowOpens (nub . (++) openPatterns) patterns
-  where patterns = findPositionPatterns''' False chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes
-        openPatterns = filter (isOpened maxHeight) (findPositionPatterns''' True chord tuning from maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes)
+findPositionPatterns 
+  allowOpens 
+  chord
+  tuning 
+  maxHeight
+  utilizeAllStrings 
+  rootNoteLowest 
+  selectionMask 
+  utilizeAllNotes 
+  strictIntervals
+  = 
+  filter (not . null) $
+  findPositionPatterns' 
+  allowOpens 
+  chord 
+  tuning 
+  maxHeight 
+  utilizeAllStrings 
+  rootNoteLowest 
+  selectionMask
+  utilizeAllNotes 
+  strictIntervals
+        
+findPositionPatterns' 
+  allowOpens 
+  chord 
+  tuning 
+  maxHeight
+  utilizeAllStrings 
+  rootNoteLowest 
+  selectionMask 
+  utilizeAllNotes 
+  strictIntervals 
+  =
+  map 
+  (\x -> 
+    findPositionPatterns'' 
+    allowOpens 
+    chord 
+    tuning 
+    x 
+    maxHeight 
+    utilizeAllStrings 
+    rootNoteLowest 
+    selectionMask 
+    utilizeAllNotes
+    strictIntervals
+  ) 
+  [0..]
+
+findPositionPatterns'' 
+  allowOpens 
+  chord 
+  tuning 
+  from
+  maxHeight 
+  utilizeAllStrings 
+  rootNoteLowest 
+  selectionMask  
+  utilizeAllNotes
+  strictIntervals
+  = 
+  applyIf 
+  allowOpens
+  (nub . (++) openPatterns) 
+  patterns
+  where 
+  patterns = 
+    findPositionPatterns''' 
+    False 
+    chord 
+    tuning  
+    from 
+    maxHeight 
+    utilizeAllStrings 
+    rootNoteLowest 
+    selectionMask 
+    utilizeAllNotes
+    strictIntervals
+  openPatterns = 
+    filter 
+    (isOpened maxHeight) 
+    (
+    findPositionPatterns''' 
+    True 
+    chord
+    tuning
+    from 
+    maxHeight
+    utilizeAllStrings 
+    rootNoteLowest
+    selectionMask 
+    utilizeAllNotes
+    strictIntervals
+    )
 
 getPositionPatternSpannedFrets positionPattern maxHeight
   = applyIf isOpened' (0:) ((uncurry enumFromTo) range)
@@ -65,10 +154,11 @@ findPositionPatterns'''
   rootNoteLowest
   selectionMask 
   utilizeAllNotes
-    = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight 
+  strictIntervals
+    = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight strictIntervals
     where
       sequencer | requiresSequence chord
-        = (\v -> (   filter ( not . null . concat )  
+        = (\v -> (   filter (not . null . concat)
                    . (\x -> filter (\a -> length (strip a) == maximum (map length (map strip x))) x)
 		   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
                    . applyIf utilizeAllNotes (filter (\x -> (nub $ sort $ concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == (nub $ sort (newNotes chord))))
@@ -88,12 +178,53 @@ findPositionPatterns'''
 				
 strip = filter (not . null)
 
-findPositionPatterns'''' includeOpens chord tuning from maxHeight =
-  map (\stringTune -> filter (positionInNoteable chord stringTune) (applyIf includeOpens (nub . (0:)) (frettedGuitarStringPostionLength from maxHeight))) 
-  tuning
+findPositionPatterns'''' 
+  includeOpens 
+  chord 
+  tuning 
+  from
+  maxHeight
+  strictIntervals 
+  =
+  map 
+  (\interval -> 
+    filter 
+    (
+    if strictIntervals 
+    then positionInInterval chord interval 
+    else positionInNoteable chord interval
+    )
+    (applyIf 
+     includeOpens 
+     (nub . (0:)) 
+     (frettedGuitarStringPostionLength from maxHeight)
+    )
+  )
+  (notesToIntervals tuning)
 
-positionInNoteable noteable stringTuning pos = any (superEquiv note) (newNotes noteable)
-  where note = tuningAndPosToNote stringTuning pos
+positionInInterval 
+  intervalable
+  stringInterval
+  pos
+  =
+  any 
+  (==(pos + stringInterval))
+  (newIntervals intervalable)
+
+positionInNoteable 
+  noteable
+  stringInterval 
+  pos
+  =
+  any
+  (superEquiv note)
+  (newNotes noteable)
+  where
+  note =
+   tuningAndPosToNote
+   stringTuning
+   pos
+  stringTuning = intervalToNote stringInterval 
 
 frettedGuitarStringPostionLength from maxHeight = [from..(from+maxHeight-1)]
 
@@ -140,4 +271,3 @@ sus4 chord = (x:canonize(sharp y):xs)
   where (x:y:xs) = newNotes chord
 
 superEquiv a b = equiv a b || equiv b a
-

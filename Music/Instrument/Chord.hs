@@ -37,6 +37,8 @@ module Music.Instrument.Chord
  sus2
  ,
  sus4
+ , 
+ chordToScale
 )
 where
 
@@ -50,3 +52,6 @@ import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 import Music.Diatonic.Scale
+
+
+

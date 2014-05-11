@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE IncoherentInstances #-}
 
 module Music.Instrument.Common where 
 
@@ -22,11 +23,33 @@ instance NewNotes Chord where
 instance NewNotes Scale where
   newNotes = notes
 
+instance NewNotes NewScale where
+  newNotes (NewScale chord) = notes chord
+
 instance NewNotes Note where
   newNotes n = [n]
 
 instance NewNotes [Note] where
   newNotes n = n
+
+instance NewNotes [Int] where
+  newNotes = map intervalToNote 
+
+class NewIntervals a where
+  newIntervals :: NewNotes a => a -> [Int] 
+
+instance NewIntervals [Int] where
+  newIntervals = id
+
+instance NewIntervals a where
+  newIntervals =  notesToIntervals . newNotes
+
+data NewScale = NewScale Chord
+
+chordToScale = NewScale
+
+intervalToNote interval = chromaticScale !! (interval `rem` chromaticScaleLength)
+notesToIntervals notes = concatMap (\(o,y) -> map (\i -> i + (o*chromaticScaleLength)  ) y ) $ zip [0..] (properGroup (\x y -> x > y) (map noteToChromaticIndex notes))
 
 data ControlAnnotation = AnnotateNote | AnnotatePositionVertical | AnnotatePositionHorizontal | AnnotateMarking
 
@@ -42,13 +65,10 @@ applyNTimes f n x = iterate f x !! n
 
 noteToChromaticIndex note = fromJust (findIndex (flip equiv note) chromaticScale)
 
-extractDegrees chord = map (+ (noteToChromaticIndex (root chord))) $ map degreeToChromaticIndex $ map fst $ degrees $ chord
-
 extractDegrees' concept = map (+ (noteToChromaticIndex root')) $ map (semitones . distance root' ) notes'
  where 
  root' = head notes'
  notes' = newNotes concept
-
 
 degreeToChromaticIndex degree = fromJust (findIndex (flip equiv degree) degreeScale)
 
@@ -63,12 +83,12 @@ rotations = reverse . (\list -> map (\n -> (take (length list) . drop (length li
 sequenceDegrees ds = scanl1 (\x y-> x + mod (y-x) chromaticScaleLength) ds
 
 findChord inputNotes = do 
-  chordType <- chordTypes
-  root <- chromaticScale
-  let notes = chordToNotes (chordType root)
-  guard (Data.Set.isSubsetOf (Data.Set.fromList (uns inputNotes )) (Data.Set.fromList notes))
-  return (chordType root) 
-  where uns = map canonize
+ chordType <- chordTypes
+ root <- chromaticScale
+ let notes = chordToNotes (chordType root)
+ guard (Data.Set.isSubsetOf (Data.Set.fromList (uns inputNotes )) (Data.Set.fromList notes))
+ return (chordType root) 
+ where uns = map canonize
 
 chordTypes = [majorChord, minorChord, diminishedChord, augmentedChord,
               major7thChord, dominant7thChord, minor7thChord, minorMajor7thChord, minor7thFlat5thChord, diminished7thChord, augmentedMajor7thChord]
@@ -104,3 +124,9 @@ applyIf :: Bool -> (a -> a) -> a -> a
 applyIf p f v = if p then f v else v
 
 insertAt = (\n x xs -> case splitAt n xs of { (a, b) -> a ++ [x] ++ b })
+
+properGroup f (x:xs) = properGroup' f [x] xs
+properGroup f [] = [] 
+properGroup' f buf@(_:_) (x:xs) = if f x (last buf) then properGroup' f (buf++[x]) xs
+                                                    else buf : properGroup' f [x] (xs)
+properGroup' f buf [] = [buf]
