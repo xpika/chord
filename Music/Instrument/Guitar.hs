@@ -19,24 +19,6 @@ import Music.Instrument.Piano
 import Music.Instrument.Common
 import Debug.Trace
 
-class PositionPatternProgression a where
-  requiresSequence :: a -> Bool
-
-instance PositionPatternProgression Chord where
-  requiresSequence _ = True
-
-instance PositionPatternProgression NewScale where
-  requiresSequence _ = False
-
-instance PositionPatternProgression Scale where 
-  requiresSequence _ = False
-
-instance PositionPatternProgression Note where
-  requiresSequence _ = False
-
-instance PositionPatternProgression [Note] where
-  requiresSequence _ = True 
-
 
 findPositionPatterns 
   allowOpens 
@@ -98,7 +80,7 @@ findPositionPatterns''
   rootNoteLowest 
   selectionMask  
   utilizeAllNotes
-  strictIntervals
+  strictSteps
   = 
   applyIf 
   allowOpens
@@ -116,7 +98,7 @@ findPositionPatterns''
     rootNoteLowest 
     selectionMask 
     utilizeAllNotes
-    strictIntervals
+    strictSteps
   openPatterns = 
     filter 
     (isOpened maxHeight) 
@@ -131,7 +113,7 @@ findPositionPatterns''
     rootNoteLowest
     selectionMask 
     utilizeAllNotes
-    strictIntervals
+    strictSteps
     )
 
 getPositionPatternSpannedFrets positionPattern maxHeight
@@ -200,7 +182,7 @@ findPositionPatterns''''
      (frettedGuitarStringPostionLength from maxHeight)
     )
   )
-  (notesToIntervals tuning)
+  (notesToSteps tuning)
 
 positionInInterval 
   intervalable
@@ -209,7 +191,7 @@ positionInInterval
   =
   any 
   (==(pos + stringInterval))
-  (newIntervals intervalable)
+  (getSteps $ lastIntervals intervalable)
 
 positionInNoteable 
   noteable
@@ -224,7 +206,7 @@ positionInNoteable
    tuningAndPosToNote
    stringTuning
    pos
-  stringTuning = intervalToNote stringInterval 
+  stringTuning = stepToNote stringInterval 
 
 frettedGuitarStringPostionLength from maxHeight = [from..(from+maxHeight-1)]
 

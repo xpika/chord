@@ -15,7 +15,6 @@ import Debug.Trace
 import Music.Instrument.Guitar (
    findPositionPatterns
   ,getPositionMultiPatternMin
-  ,PositionPatternProgression
   ,getPositionPatternMinAdjusted
   ,getPositionPatternHeight
   ,getPositionPatternSpannedFrets
@@ -25,6 +24,7 @@ import Music.Instrument.Piano
 import Music.Instrument.Common (
  ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt
  ,NewNotes
+ ,PositionPatternProgression
  )
  
 maxFretHeight = 30
@@ -62,14 +62,14 @@ renderGuitarConcept
  selectionMask
  renderAllFrets 
  utilizeAllNotes
- strictIntervals
+ strictSteps
  =
    head
  $ renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions 
  where 
  positionPatternProgressions = 
      take maxFretHeight 
-   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes strictIntervals
+   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes strictSteps
        
 renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
     drop from

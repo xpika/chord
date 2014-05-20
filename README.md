@@ -56,11 +56,16 @@ Fret: 1
 ---*--
 ***---
 ------
-Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] False True True)
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] True True True)
 =AD===
 Fb----
 --E---
 GC----
+Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (shiftOctave 1 $ convertToSteps $ majorScale F) 4 0 False False [] True True True)
+===G=E
+----C-
+---A--
+--FbD-
 Prelude Music.Instrument.Chord> putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (chordToScale (majorChord F)) 4 0 False False [] False True True)
 =A====
 F-----

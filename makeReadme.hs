@@ -11,7 +11,7 @@ import GetExpression
 main = do file <- readFile "README.md.template"
           let fileLines = lines file
           let modifiedFile = unlines $ insertAt (length fileLines -1) (
-                             (makeGhciLine (expressions!!0)) ++ "\n" ++ $(return (getExpression (expressions!!0))) 
+                             (makeGhciLine (expressions!!0)) ++ "\n" ++ $(return (getExpression (expressions!!0)))
                              ++(makeGhciLine (expressions!!1)) ++ "\n" ++ $(return (getExpression (expressions!!1))) 
                              ++(makeGhciLine (expressions!!2)) ++ "\n" ++ $(return (getExpression (expressions!!2))) 
                              ++(makeGhciLine (expressions!!3)) ++ "\n" ++ $(return (getExpression (expressions!!3))) 
@@ -28,7 +28,8 @@ main = do file <- readFile "README.md.template"
                              ++(makeGhciLine (expressions!!14)) ++ "\n" ++ $(return (getExpression (expressions!!14)))
                              ++(makeGhciLine (expressions!!15)) ++ "\n" ++ $(return (getExpression (expressions!!15)))
                              ++(makeGhciLine (expressions!!16)) ++ "\n" ++ $(return (getExpression (expressions!!16)))
-                             ++(makeGhciLine (expressions!!17)) ++ "\n" ++ show ($(return (getExpression (expressions!!17))))
+                             ++(makeGhciLine (expressions!!17)) ++ "\n" ++ $(return (getExpression (expressions!!17)))
+                             ++(makeGhciLine (expressions!!18)) ++ "\n" ++ show ($(return (getExpression (expressions!!18))))
                              ) fileLines
           writeFile "README.md" modifiedFile
 

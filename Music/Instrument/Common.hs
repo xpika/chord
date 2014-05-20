@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE IncoherentInstances #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Music.Instrument.Common where 
 
@@ -14,8 +15,33 @@ import Data.Char
 import qualified Data.Set
 import Music.Diatonic.Scale
 
+
+class PositionPatternProgression a where
+  requiresSequence :: NewNotes a => a -> Bool
+
+instance PositionPatternProgression Chord where
+  requiresSequence _ = True
+
+instance PositionPatternProgression NewScale where
+  requiresSequence _ = False
+
+instance PositionPatternProgression Scale where 
+  requiresSequence _ = False
+
+instance PositionPatternProgression Note where
+  requiresSequence _ = False
+
+instance PositionPatternProgression [Note] where
+  requiresSequence _ = True 
+
+instance PositionPatternProgression NewSteps where
+  requiresSequence (NewSteps b _) = b
+
 class NewNotes a where
   newNotes :: a -> [Note]
+  lastIntervals :: PositionPatternProgression a => a -> NewSteps
+  lastIntervals a = NewSteps se . notesToSteps . newNotes $ a
+    where se = requiresSequence a
 
 instance NewNotes Chord where
   newNotes = notes
@@ -32,24 +58,25 @@ instance NewNotes Note where
 instance NewNotes [Note] where
   newNotes n = n
 
-instance NewNotes [Int] where
-  newNotes = map intervalToNote 
-
-class NewIntervals a where
-  newIntervals :: NewNotes a => a -> [Int] 
-
-instance NewIntervals [Int] where
-  newIntervals = id
-
-instance NewIntervals a where
-  newIntervals =  notesToIntervals . newNotes
-
 data NewScale = NewScale Chord
+data NewSteps = NewSteps Bool [Int]
+
+instance NewNotes NewSteps where
+  newNotes ns = (map stepToNote) . deStep $ ns 
+  lastIntervals = id
+
+stepMap f (NewSteps b d) = NewSteps b (f d)
+deStep (NewSteps b xs) = xs 
+getSteps (NewSteps b xs) = xs
+
+convertToSteps = lastIntervals 
+shiftOctave n = shiftStep (n*12)
+shiftStep n = stepMap (map (+n))
 
 chordToScale = NewScale
 
-intervalToNote interval = chromaticScale !! (interval `rem` chromaticScaleLength)
-notesToIntervals notes = concatMap (\(o,y) -> map (\i -> i + (o*chromaticScaleLength)  ) y ) $ zip [0..] (properGroup (\x y -> x > y) (map noteToChromaticIndex notes))
+stepToNote interval = chromaticScale !! (interval `rem` chromaticScaleLength)
+notesToSteps notes = concatMap (\(o,y) -> map (\i -> i + (o*chromaticScaleLength)  ) y ) $ zip [0..] (properGroup (\x y -> x > y) (map noteToChromaticIndex notes))
 
 data ControlAnnotation = AnnotateNote | AnnotatePositionVertical | AnnotatePositionHorizontal | AnnotateMarking
 
