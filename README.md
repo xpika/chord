@@ -176,5 +176,11 @@ Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 0 AnnotateMarking (
 |* |  |* |  |* |  |  |
 |__|__|__|__|__|__|__|
 Prelude Music.Instrument.Chord> putStrLn (renderPianoConcept 1 AnnotateNote (majorScale A))
-" ____________________ ____________________ \n| | || | | | || || | | |d|| | | |g||a|| | |\n| |_||_| | |_||_||_| | |_||_| | |_||_||_| |\n|  |  |  |  |  |A |B |  |D |E |  |  |  |  |\n|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n"
+ ____________________ ____________________ 
+| | || | | | || || | | |d|| | | |g||a|| | |
+| |_||_| | |_||_||_| | |_||_| | |_||_||_| |
+|  |  |  |  |  |A |B |  |D |E |  |  |  |  |
+|__|__|__|__|__|__|__|__|__|__|__|__|__|__|
+Prelude Music.Instrument.Chord> putStrLn (head $ findPositionPatterns True (majorChord C) standardTuning 4 True False [] False False)
+[[[0],[3],[2],[0],[1],[0]],[[0],[3],[2],[0],[1],[3]],[[3],[3],[2],[0],[1],[0]],[[3],[3],[2],[0],[1],[3]]]
 ```
