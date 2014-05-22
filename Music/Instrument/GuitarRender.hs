@@ -46,6 +46,7 @@ renderGuitarConcept
  -> Bool
  -> Bool
  -> Bool
+ -> Bool
  -> String
 renderGuitarConcept 
  allowOpens 
@@ -61,39 +62,141 @@ renderGuitarConcept
  rootNoteLowest
  selectionMask
  renderAllFrets 
+ renderPressedFrets
  utilizeAllNotes
  strictSteps
  =
    head
- $ renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternProgressions 
+ $ renderGuitarChord' 
+   renderAllFrets 
+   renderPressedFrets
+   controlAnnotation 
+   annotateFrets 
+   firstTuningLast 
+   orientationVertical 
+   tuning 
+   maxHeight 
+   from
+   positionPatternProgressions 
  where 
  positionPatternProgressions = 
-     take maxFretHeight 
-   $ findPositionPatterns allowOpens chord tuning maxHeight utilizeAllStrings rootNoteLowest selectionMask utilizeAllNotes strictSteps
+    take maxFretHeight 
+  $ findPositionPatterns
+    allowOpens
+    chord
+    tuning
+    maxHeight
+    utilizeAllStrings
+    rootNoteLowest
+    selectionMask
+    utilizeAllNotes
+    strictSteps
        
-renderGuitarChord' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight from positionPatternsProgressions =
+renderGuitarChord' 
+  renderAllFrets 
+  renderPressedFrets
+  controlAnnotation
+  annotateFrets
+  firstTuningLast 
+  orientationVertical
+  tuning 
+  maxHeight 
+  from 
+  positionPatternsProgressions 
+  =
     drop from
-  $ map (renderGuitarChord'' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight) positionPatternsProgressions
+  $ map (renderGuitarChord'' 
+         renderAllFrets 
+         renderPressedFrets 
+         controlAnnotation 
+         annotateFrets   
+         firstTuningLast 
+         orientationVertical
+         tuning 
+         maxHeight) 
+    positionPatternsProgressions
 
-renderGuitarChord'' renderAllFrets controlAnnotation annotateFrets firstTuningLast orientationVertical tuning maxHeight positionPatterns =
+renderGuitarChord'' 
+  renderAllFrets 
+  renderPressedFrets 
+  controlAnnotation 
+  annotateFrets
+  firstTuningLast
+  orientationVertical
+  tuning
+  maxHeight
+  positionPatterns
+  =
     concat 
   $ intersperse "\n" 
-  $ renderPositionPatternsRange renderAllFrets annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns
+  $ renderPositionPatternsRange
+    renderAllFrets
+    renderPressedFrets
+    annotateFrets
+    firstTuningLast
+    orientationVertical
+    controlAnnotation
+    tuning
+    maxHeight
+    positionPatterns
 
-renderPositionPatternsRange renderAllFrets annotateFrets firstTuningLast orientationVertical controlAnnotation tuning maxHeight positionPatterns' = 
-  map (renderPositionPattern renderAllFrets annotateFrets firstTuningLast orientationVertical controlAnnotation tuning minPosition (maxHeight-1)) positionPatterns'
+renderPositionPatternsRange
+ renderAllFrets
+ renderPressedFrets
+ annotateFrets 
+ firstTuningLast
+ orientationVertical 
+ controlAnnotation
+ tuning 
+ maxHeight 
+ positionPatterns'
+ = 
+  map (renderPositionPattern 
+       renderAllFrets 
+       renderPressedFrets
+       annotateFrets
+       firstTuningLast
+       orientationVertical
+       controlAnnotation
+       tuning
+       minPosition
+       (maxHeight-1) 
+       )  
+  positionPatterns'
   where 
   minPosition = getPositionMultiPatternMin positionPatterns'
 
-renderPositionPattern renderAllFrets annotateFrets firstTuningLast orientationVertical controlAnnotation tuning from maxHeight positionPattern = 
+renderPositionPattern 
+  renderAllFrets
+  renderPressedFrets
+  annotateFrets 
+  firstTuningLast 
+  orientationVertical
+  controlAnnotation
+  tuning 
+  from  
+  maxHeight 
+  positionPattern 
+  = 
     applyIf (minPositionAdjusted /= 0 && not renderAllFrets) ((++) ("Fret: " ++ show minPositionAdjusted ++ "\n"))
   $ unlines
-  $ renderPositionPattern' renderAllFrets annotateFrets firstTuningLast orientationVertical controlAnnotation tuning from maxHeight positionPattern
+  $ renderPositionPattern' 
+    renderAllFrets 
+    renderPressedFrets
+    annotateFrets 
+    firstTuningLast  
+    orientationVertical 
+    controlAnnotation 
+    tuning 
+    from 
+    maxHeight 
+    positionPattern
   where
   minPositionAdjusted = getPositionPatternMinAdjusted maxHeight positionPattern
 
 renderPositionPattern' 
   renderAllFrets
+  renderPressedFrets
   annotateFrets 
   firstTuningLast
   orientationVertical
@@ -111,6 +214,7 @@ renderPositionPattern'
     map (\(pos,stringIndex) -> 
 	       renderGuitarString
 	       renderAllFrets 
+	       renderPressedFrets
 	       (if firstTuningLast then stringIndex else compliment (length tuning) stringIndex)
 		   orientationVertical
 		   controlAnnotation 
@@ -131,14 +235,11 @@ renderPositionPattern'
   positionPatternSpannedFrets' = getPositionPatternSpannedFrets positionPattern maxHeight
   tuning' = reverse tuning
 
-
 consec (x:xs) = consec' [x] xs
 consec [] = [] 
 consec' buf@(_:_) (x:xs) = if x - last buf == 1 then consec' (buf++[x]) xs
                                                 else buf : consec' [x] (xs)
 consec' buf [] = [buf]
-
-
 
 firstGap [] = Nothing
 firstGap xs = listToMaybe (take 1 $ map fst $ dropWhile (uncurry (==)) $ zip [head xs..] xs)
@@ -147,6 +248,7 @@ compliment m n = m - n
 
 renderGuitarString 
  renderAllFrets
+ renderPressedFrets
  stringIndex 
  orientationVertical
  controlAnnotation
@@ -156,7 +258,8 @@ renderGuitarString
  positionPatternSpannedFrets 
  = 
    applyIf (not (positionPatternsGap == Nothing)) (addGap positionPatternsGap)
- $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) positionPatternSpannedFrets
+ $ map (char stringIndex orientationVertical stringTuning positionIndices controlAnnotation) 
+   (applyIf renderPressedFrets (filter (\i -> i `elem` positionIndices)) positionPatternSpannedFrets)
  where 
  positionPatternsGap = firstGap positionPatternSpannedFrets 
  addGap (Just n) str = insertAt n (gapChar orientationVertical) str
