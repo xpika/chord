@@ -60,6 +60,11 @@ instance NewNotes Harmony where
   requiresSequence' _ = undefined
   getChords = Just . chords 
 
+instance NewNotes [Chord] where
+  newNotes = undefined
+  requiresSequence' _ = undefined
+  getChords = Just
+
 data NewScale = NewScale Chord
 data NewSteps = NewSteps Bool [Int]
 

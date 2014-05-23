@@ -41,6 +41,7 @@ expressions = [
  ,"renderGuitarConcept True AnnotatePositionVertical True True True standardTuning (minorChord C) 4 1 True False [] False False False False"
  ,"renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True False [] False False False False"
  ,"renderGuitarConcept False AnnotatePositionVertical False True True standardTuning (harmony (majorScale A)) 4 0 True False [] True True False False"
+ ,"renderGuitarConcept False AnnotatePositionVertical False True True standardTuning [majorChord D,majorChord A,minorChord B,majorChord G] 4 0 True False [] True True False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] True False True True"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (shiftOctave 1 $ convertToSteps $ majorScale F) 4 0 False False [] True False True True"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (chordToScale (majorChord F)) 4 0 False False [] False False True True"

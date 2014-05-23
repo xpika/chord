@@ -64,6 +64,13 @@ Prelude Music.Instrument.Chord> mapM_ putStrLn (renderGuitarConcept False Annota
 022100
 244222
 456434
+Prelude Music.Instrument.Chord> mapM_ putStrLn (renderGuitarConcept False AnnotatePositionVertical False True True standardTuning [majorChord D,majorChord A,minorChord B,majorChord G] 4 0 True False [] True True False False)
+200232
+002220
+224432
+320003
+
+320033
 Prelude Music.Instrument.Chord> mapM_ putStrLn (renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] True False True True)
 =AD===
 Fb----
