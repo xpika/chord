@@ -19,10 +19,9 @@ import Music.Instrument.Piano
 import Music.Instrument.Common
 import Debug.Trace
 
-
 findPositionPatterns 
   allowOpens 
-  chord
+  newNoteable 
   tuning 
   maxHeight
   utilizeAllStrings 
@@ -31,17 +30,35 @@ findPositionPatterns
   utilizeAllNotes 
   strictIntervals
   = 
-  filter (not . null) $
-  findPositionPatterns' 
-  allowOpens 
-  chord 
-  tuning 
-  maxHeight 
-  utilizeAllStrings 
-  rootNoteLowest 
-  selectionMask
-  utilizeAllNotes 
-  strictIntervals
+  case getChords newNoteable of 
+   Nothing ->
+     map (\c -> 
+     filter (not . null) $
+     findPositionPatterns' 
+     allowOpens 
+     c 
+     tuning 
+     maxHeight 
+     utilizeAllStrings 
+     rootNoteLowest 
+     selectionMask
+     utilizeAllNotes 
+     strictIntervals
+     ) [newNoteable] 
+   Just chords ->
+     map (\c -> 
+     filter (not . null) $
+     findPositionPatterns' 
+     allowOpens 
+     c 
+     tuning 
+     maxHeight 
+     utilizeAllStrings 
+     rootNoteLowest 
+     selectionMask
+     utilizeAllNotes 
+     strictIntervals
+     ) chords
         
 findPositionPatterns' 
   allowOpens 
@@ -139,7 +156,7 @@ findPositionPatterns'''
   strictIntervals
     = sequencer $ findPositionPatterns'''' includeOpens chord tuning from maxHeight strictIntervals
     where
-      sequencer | requiresSequence chord
+      sequencer | requiresSequence' chord
         = (\v -> (   filter (not . null . concat)
                    . (\x -> filter (\a -> length (strip a) == maximum (map length (map strip x))) x)
 		   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))

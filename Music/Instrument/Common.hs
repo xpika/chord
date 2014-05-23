@@ -8,65 +8,63 @@ import Music.Diatonic
 import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
+import Music.Diatonic.Scale
+import Music.Diatonic.Harmony
 import Control.Monad
 import Data.List
 import Data.Maybe
 import Data.Char
 import qualified Data.Set
-import Music.Diatonic.Scale
-
-
-class PositionPatternProgression a where
-  requiresSequence :: NewNotes a => a -> Bool
-
-instance PositionPatternProgression Chord where
-  requiresSequence _ = True
-
-instance PositionPatternProgression NewScale where
-  requiresSequence _ = False
-
-instance PositionPatternProgression Scale where 
-  requiresSequence _ = False
-
-instance PositionPatternProgression Note where
-  requiresSequence _ = False
-
-instance PositionPatternProgression [Note] where
-  requiresSequence _ = True 
-
-instance PositionPatternProgression NewSteps where
-  requiresSequence (NewSteps b _) = b
 
 class NewNotes a where
   newNotes :: a -> [Note]
-  lastIntervals :: PositionPatternProgression a => a -> NewSteps
+  lastIntervals :: a -> NewSteps
   lastIntervals a = NewSteps se . notesToSteps . newNotes $ a
-    where se = requiresSequence a
+    where se = requiresSequence' a
+  requiresSequence' :: a -> Bool
+  getChords :: a -> Maybe [Chord]
 
 instance NewNotes Chord where
   newNotes = notes
+  requiresSequence' _ = True
+  getChords = const Nothing
 
 instance NewNotes Scale where
   newNotes = notes
+  requiresSequence' _ = False
+  getChords = const Nothing
 
 instance NewNotes NewScale where
   newNotes (NewScale chord) = notes chord
+  requiresSequence' _ = False
+  getChords = const Nothing
 
 instance NewNotes Note where
   newNotes n = [n]
+  requiresSequence' _ = False
+  getChords = const Nothing
 
 instance NewNotes [Note] where
   newNotes n = n
+  requiresSequence' _ = True
+  getChords = const Nothing
+
+instance NewNotes NewSteps where
+  newNotes ns = (map stepToNote) . deStep $ ns
+  lastIntervals = id
+  requiresSequence' (NewSteps b _) = b
+  getChords = const Nothing
+
+instance NewNotes Harmony where
+  newNotes = undefined
+  requiresSequence' _ = undefined
+  getChords = Just . chords 
 
 data NewScale = NewScale Chord
 data NewSteps = NewSteps Bool [Int]
 
-instance NewNotes NewSteps where
-  newNotes ns = (map stepToNote) . deStep $ ns 
-  lastIntervals = id
-
 stepMap f (NewSteps b d) = NewSteps b (f d)
-deStep (NewSteps b xs) = xs 
+deStep (NewSteps b xs) = xs
 getSteps (NewSteps b xs) = xs
 
 convertToSteps = lastIntervals 

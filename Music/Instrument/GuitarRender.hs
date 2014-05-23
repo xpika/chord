@@ -22,15 +22,19 @@ import Music.Instrument.Guitar (
   
 import Music.Instrument.Piano
 import Music.Instrument.Common (
- ControlAnnotation (..),tuningAndPosToNote,abbreviateNote,horizontalConcat,applyIf,insertAt
+  ControlAnnotation (..)
+ ,tuningAndPosToNote
+ ,abbreviateNote
+ ,horizontalConcat
+ ,applyIf
+ ,insertAt
  ,NewNotes
- ,PositionPatternProgression
  )
  
 maxFretHeight = 30
 
 renderGuitarConcept 
- :: (PositionPatternProgression a,NewNotes a)
+ :: NewNotes a
  => Bool 
  -> ControlAnnotation 
  -> Bool
@@ -47,7 +51,7 @@ renderGuitarConcept
  -> Bool
  -> Bool
  -> Bool
- -> String
+ -> [String]
 renderGuitarConcept 
  allowOpens 
  controlAnnotation 
@@ -66,8 +70,9 @@ renderGuitarConcept
  utilizeAllNotes
  strictSteps
  =
-   head
- $ renderGuitarChord' 
+   map head
+ $ map (\ ppp -> 
+   renderGuitarChord' 
    renderAllFrets 
    renderPressedFrets
    controlAnnotation 
@@ -77,10 +82,12 @@ renderGuitarConcept
    tuning 
    maxHeight 
    from
-   positionPatternProgressions 
+   ppp
+   ) 
+   positionPatternProgressions
  where 
  positionPatternProgressions = 
-    take maxFretHeight 
+    map (take maxFretHeight)
   $ findPositionPatterns
     allowOpens
     chord

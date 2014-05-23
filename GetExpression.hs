@@ -11,7 +11,9 @@ import Data.Either
 getExpression string = head $ rights [parseExp string]
 getExpressionAndLine string = (makeGhciLine string , head $ rights [parseExp string])
 
-makeGhciLine x = "Prelude Music.Instrument.Chord> putStrLn ("++x++")"
+makeGhciLine x = ghciLinePrompt ++ "mapM_ putStrLn ("++x++")"
+makeGhciLine' x = ghciLinePrompt ++ "putStrLn ("++x++")"
+ghciLinePrompt = "Prelude Music.Instrument.Chord> "
 
 {-
  -
@@ -38,7 +40,7 @@ expressions = [
   "renderGuitarConcept True AnnotatePositionVertical False True False standardTuning (minorChord C) 4 1 True False [] False False False False"
  ,"renderGuitarConcept True AnnotatePositionVertical True True True standardTuning (minorChord C) 4 1 True False [] False False False False"
  ,"renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True False [] False False False False"
- ,"renderGuitarConcept False AnnotatePositionVertical False True True dropD (majorChord F) 4 0 True False [] True True False False"
+ ,"renderGuitarConcept False AnnotatePositionVertical False True True standardTuning (harmony (majorScale A)) 4 0 True False [] True True False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] True False True True"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (shiftOctave 1 $ convertToSteps $ majorScale F) 4 0 False False [] True False True True"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (chordToScale (majorChord F)) 4 0 False False [] False False True True"
@@ -54,5 +56,5 @@ expressions = [
  ,"renderGuitarConcept False AnnotateNote True True True standardTuning E 13 0 True False [] False False False False"
  ,"renderPianoConcept 0 AnnotateMarking (majorChord C)"
  ,"renderPianoConcept 1 AnnotateNote (majorScale A)"
- ,"head $ findPositionPatterns True (majorChord C) standardTuning 4 True False [] False False"
+ ,"map head $ findPositionPatterns True (majorChord C) standardTuning 4 True False [] False False"
  ]

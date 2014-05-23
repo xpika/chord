@@ -20,6 +20,8 @@ module Music.Instrument.Chord
  ,
  module Music.Diatonic.Scale
  ,
+ module Music.Diatonic.Harmony
+ ,
  ukelele
  ,
  lightChord
@@ -31,8 +33,6 @@ module Music.Instrument.Chord
  findPositionPatterns
  ,
  getPositionPatternRange
- ,
- PositionPatternProgression (..)
  ,
  sus2
  ,
@@ -52,6 +52,4 @@ import Music.Diatonic.Note
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 import Music.Diatonic.Scale
-
-
-
+import Music.Diatonic.Harmony
