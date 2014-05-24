@@ -4,8 +4,8 @@
 
 module Music.Instrument.Common where 
 
-import Music.Diatonic
-import Music.Diatonic.Note
+import Music.Diatonic hiding (transpose)
+import Music.Diatonic.Note hiding (transpose)
 import Music.Diatonic.Degree
 import Music.Diatonic.Chord
 import Music.Diatonic.Scale
@@ -160,3 +160,7 @@ properGroup f [] = []
 properGroup' f buf@(_:_) (x:xs) = if f x (last buf) then properGroup' f (buf++[x]) xs
                                                     else buf : properGroup' f [x] (xs)
 properGroup' f buf [] = [buf]
+
+
+hconcat w w2 =  unlines $ map concat $ transpose $ map (\x ->  map (\y ->  map head $ transpose [y, replicate ( maximum (map length  x)+1) ' '   ]   ) x   ) $ transpose $ transpose $ map lines [w,w2]
+

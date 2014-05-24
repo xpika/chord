@@ -9,9 +9,10 @@ import Language.Haskell.Meta.Parse.Careful
 import Data.Either
 
 getExpression string = head $ rights [parseExp string]
-getExpressionAndLine string = (makeGhciLine string , head $ rights [parseExp string])
+getExpressionAndLine string = (makeGhciLine string,head $ rights [parseExp string])
 
-makeGhciLine x = ghciLinePrompt ++ "mapM_ putStrLn ("++x++")"
+makeGhciLine x = ghciLinePrompt ++ "putStr $ concat $map (foldl1 hconcat) ("++x++")"
+makeGhciLine'' x = ghciLinePrompt ++ "putStr (concat . concat . map intersperse \"\\n\") ("++x++")"
 makeGhciLine' x = ghciLinePrompt ++ "putStrLn ("++x++")"
 ghciLinePrompt = "Prelude Music.Instrument.Chord> "
 

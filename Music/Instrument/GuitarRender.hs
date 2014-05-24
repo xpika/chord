@@ -51,7 +51,7 @@ renderGuitarConcept
  -> Bool
  -> Bool
  -> Bool
- -> [String]
+ -> [[String]]
 renderGuitarConcept 
  allowOpens 
  controlAnnotation 
@@ -133,10 +133,7 @@ renderGuitarChord''
   tuning
   maxHeight
   positionPatterns
-  =
-    concat 
-  $ intersperse "\n" 
-  $ renderPositionPatternsRange
+  = renderPositionPatternsRange
     renderAllFrets
     renderPressedFrets
     annotateFrets
