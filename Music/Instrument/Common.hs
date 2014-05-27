@@ -65,6 +65,29 @@ instance NewNotes [Chord] where
   requiresSequence' _ = undefined
   getChords = Just
 
+instance Nts NewChord where
+  notes (NewChord a b c) = (x:canonize(tf y):xs)
+    where 
+    (x:y:xs) = notes c 
+    tf = case b of
+        (Just (Sus 2)) -> (\x -> flat (flat x))
+        (Just (Sus 4)) -> (\x -> (sharp x))
+        _ -> id
+
+instance NewNotes NewChord where
+  newNotes = notes
+  requiresSequence' _ = True
+  getChords = const Nothing
+
+sus n c = NewChord Nothing (Just $ Sus n) c
+
+{-
+sus2 chord = (x:canonize(flat(flat y)):xs)
+  where (x:y:xs) = newNotes chord
+sus4 chord = (x:canonize(sharp y):xs)
+  where (x:y:xs) = newNotes chord
+-}
+
 data NewScale = NewScale Chord
 data NewSteps = NewSteps Bool [Int]
 

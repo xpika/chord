@@ -51,6 +51,7 @@ renderGuitarConcept
  -> Bool
  -> Bool
  -> Bool
+ -> Bool
  -> [[String]]
 renderGuitarConcept 
  allowOpens 
@@ -69,9 +70,10 @@ renderGuitarConcept
  renderPressedFrets
  utilizeAllNotes
  strictSteps
+ annotateChord
  =
    map head
- $ map (\ ppp -> 
+ $ map (
    renderGuitarChord' 
    renderAllFrets 
    renderPressedFrets
@@ -82,7 +84,7 @@ renderGuitarConcept
    tuning 
    maxHeight 
    from
-   ppp
+   annotateChord
    ) 
    positionPatternProgressions
  where 
@@ -109,6 +111,7 @@ renderGuitarChord'
   tuning 
   maxHeight 
   from 
+  annotateChord
   positionPatternsProgressions 
   =
     drop from
@@ -120,7 +123,9 @@ renderGuitarChord'
          firstTuningLast 
          orientationVertical
          tuning 
-         maxHeight) 
+         maxHeight
+         annotateChord 
+         ) 
     positionPatternsProgressions
 
 renderGuitarChord'' 
@@ -132,6 +137,7 @@ renderGuitarChord''
   orientationVertical
   tuning
   maxHeight
+  annotateChord 
   positionPatterns
   = renderPositionPatternsRange
     renderAllFrets
@@ -143,6 +149,7 @@ renderGuitarChord''
     tuning
     maxHeight
     positionPatterns
+    annotateChord 
 
 renderPositionPatternsRange
  renderAllFrets
@@ -154,6 +161,7 @@ renderPositionPatternsRange
  tuning 
  maxHeight 
  positionPatterns'
+ annotateChord 
  = 
   map (renderPositionPattern 
        renderAllFrets 
