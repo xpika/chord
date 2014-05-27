@@ -68,6 +68,20 @@ instance NewNotes [Chord] where
 data NewScale = NewScale Chord
 data NewSteps = NewSteps Bool [Int]
 
+data NewChord = NewChord (Maybe Int) (Maybe ChordModifier) Chord
+
+data ChordModifier = Sus Int
+
+applyMaybe f m a = case m of
+  Just b -> f a b
+  _ -> a
+
+instance Show ChordModifier where
+ show (Sus x) = "sus"++show x
+
+instance Show NewChord where
+ show (NewChord inversion modifier c) = applyMaybe (\x y -> x++show y) modifier (show c)
+
 stepMap f (NewSteps b d) = NewSteps b (f d)
 deStep (NewSteps b xs) = xs
 getSteps (NewSteps b xs) = xs
