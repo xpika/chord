@@ -23,6 +23,8 @@ class NewNotes a where
     where se = requiresSequence' a
   requiresSequence' :: a -> Bool
   getChords :: a -> Maybe [Chord]
+  isSlash :: a -> Bool
+  isSlash = const False 
 
 instance NewNotes Chord where
   newNotes = notes
@@ -66,7 +68,7 @@ instance NewNotes [Chord] where
   getChords = Just
 
 instance Nts NewChord where
-  notes (NewChord a b c) = (x:canonize(tf y):xs)
+  notes (NewChord inversion b c) = applyMaybe (\x y-> y:x) (x:canonize(tf y):xs) inversion
     where 
     (x:y:xs) = notes c 
     tf = case b of
@@ -78,8 +80,14 @@ instance NewNotes NewChord where
   newNotes = notes
   requiresSequence' _ = True
   getChords = const Nothing
+  isSlash (NewChord i _ _) = isJust i
 
 sus n c = NewChord Nothing (Just $ Sus n) c
+
+slash note chord = NewChord (Just note) Nothing chord
+
+getNoteIndexFromChord note chord = elemIndex note (notes chord)
+getNoteFromChordIndex chordIndex chord = (notes chord) !! chordIndex
 
 {-
 sus2 chord = (x:canonize(flat(flat y)):xs)
@@ -91,11 +99,11 @@ sus4 chord = (x:canonize(sharp y):xs)
 data NewScale = NewScale Chord
 data NewSteps = NewSteps Bool [Int]
 
-data NewChord = NewChord (Maybe Int) (Maybe ChordModifier) Chord
+data NewChord = NewChord (Maybe Note) (Maybe ChordModifier) Chord
 
 data ChordModifier = Sus Int
 
-applyMaybe f m a = case m of
+applyMaybe f a m = case m of
   Just b -> f a b
   _ -> a
 
@@ -103,7 +111,7 @@ instance Show ChordModifier where
  show (Sus x) = "sus"++show x
 
 instance Show NewChord where
- show (NewChord inversion modifier c) = applyMaybe (\x y -> x++show y) modifier (show c)
+ show (NewChord inversion modifier c) = applyMaybe (\x y -> x ++ "/" ++show y) (applyMaybe (\x y -> x++show y) (show c) modifier) inversion
 
 stepMap f (NewSteps b d) = NewSteps b (f d)
 deStep (NewSteps b xs) = xs

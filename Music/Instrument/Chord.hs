@@ -39,6 +39,8 @@ module Music.Instrument.Chord
  sus4
  , 
  chordToScale
+ ,
+ slash
 )
 where
 

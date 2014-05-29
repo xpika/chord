@@ -50,7 +50,7 @@ expressions = [
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (sus 4 $ dominant7thChord G) 4 3 False True [] False False True False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (minorChord G) 4 1 False False lightChord False False False False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (minor7thChord A) 4 2 False False lightChord False False True False False"
- ,"renderGuitarConcept False AnnotateMarking False True True standardTuning (majorChord D) 4 0 False True [] False False False False False"
+ ,"renderGuitarConcept False AnnotateMarking False True True standardTuning (slash C (majorChord D)) 4 0 False True [] False False False False False"
  ,"renderGuitarConcept False AnnotateMarking True True True standardTuning (fifthChord B) 4 0 False True powerChord True False False False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorChord (flat A)) 4 0 False False [] False False False False False"
  ,"renderGuitarConcept False AnnotatePositionVertical False True True ukelele (majorChord C) 4 0 True False [] False False False False False"

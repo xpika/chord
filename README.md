@@ -88,11 +88,11 @@ Fret: 5
 ------
 ------
 ------
-Prelude Music.Instrument.Chord> putStr $ concat $ map (foldl1 hconcat) (renderGuitarConcept False AnnotateMarking False True True standardTuning (majorChord D) 4 0 False True [] False False False False False)
+Prelude Music.Instrument.Chord> putStr $ concat $ map (foldl1 hconcat) (renderGuitarConcept False AnnotateMarking False True True standardTuning (slash C (majorChord D)) 4 0 False True [] False False False False False)
 ==o===
 ------
 ---*-*
-----*-
+-*--*-
 Prelude Music.Instrument.Chord> putStr $ concat $ map (foldl1 hconcat) (renderGuitarConcept False AnnotateMarking True True True standardTuning (fifthChord B) 4 0 False True powerChord True False False False False)
 0======
 1------

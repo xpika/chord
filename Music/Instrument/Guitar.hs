@@ -159,7 +159,8 @@ findPositionPatterns'''
       sequencer | requiresSequence' chord
         = (\v -> (   filter (not . null . concat)
                    . (\x -> filter (\a -> length (strip a) == maximum (map length (map strip x))) x)
-		   . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
+		  . applyIf utilizeAllStrings (filter (\x -> length (concat x) == length tuning))
+		   . applyIf (isSlash chord) (filter (\x -> (nub $ sort $ drop 1 (concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning)))  == (nub $ sort $ drop 1 $ newNotes chord)))
                    . applyIf utilizeAllNotes (filter (\x -> (nub $ sort $ concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == (nub $ sort (newNotes chord))))
                    . applyIf rootNoteLowest (filter (\x -> take 1 (concat (zipWith (\ps t -> map (tuningAndPosToNote t) ps) x tuning))  == take 1 (newNotes chord)))
 		   . applyIf (not utilizeAllStrings && (not . null $ selectionMask)) (filter (\x ->
