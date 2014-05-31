@@ -8,7 +8,7 @@ import Data.Either
 import GetExpression
 import Data.List
 
-concat' =  concat . map (foldl1 hconcat)
+concat' =  concat . map hConcat
   
 main = do file <- readFile "README.md.template"
           let fileLines = lines file
@@ -17,7 +17,7 @@ main = do file <- readFile "README.md.template"
                              ++(makeGhciLine (expressions!!1)) ++ "\n" ++ concat' $(return (getExpression (expressions!!1))) 
                              ++(makeGhciLine (expressions!!2)) ++ "\n" ++ concat' $(return (getExpression (expressions!!2))) 
                              ++(makeGhciLine (expressions!!3)) ++ "\n" ++ concat' $(return (getExpression (expressions!!3))) 
-                             ++(makeGhciLine (expressions!!4)) ++ "\n" ++ concat' $(return (getExpression (expressions!!4)))
+                             ++(makeGhciLine''' (expressions!!4)) ++ "\n" ++ $(return (getExpression (expressions!!4)))
                              ++(makeGhciLine (expressions!!5)) ++ "\n" ++ concat' $(return (getExpression (expressions!!5)))
                              ++(makeGhciLine (expressions!!6)) ++ "\n" ++ concat' $(return (getExpression (expressions!!6)))
                              ++(makeGhciLine (expressions!!7)) ++ "\n" ++ concat' $(return (getExpression (expressions!!7)))

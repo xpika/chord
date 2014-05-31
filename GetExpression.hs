@@ -11,9 +11,10 @@ import Data.Either
 getExpression string = head $ rights [parseExp string]
 getExpressionAndLine string = (makeGhciLine string,head $ rights [parseExp string])
 
-makeGhciLine x = ghciLinePrompt ++ "putStr $ concat $ map (foldl1 hconcat) ("++x++")"
+makeGhciLine x = ghciLinePrompt ++ "putStr $ concat $ map hConcat ("++x++")"
 makeGhciLine'' x = ghciLinePrompt ++ "putStr (concat . concat . map intersperse \"\\n\") ("++x++")"
 makeGhciLine' x = ghciLinePrompt ++ "putStrLn ("++x++")"
+makeGhciLine''' x = ghciLinePrompt ++ "putStr $ " ++ x
 ghciLinePrompt = "Prelude Music.Instrument.Chord> "
 
 {-
@@ -42,7 +43,7 @@ expressions = [
  ,"renderGuitarConcept True AnnotatePositionVertical True True True standardTuning (minorChord C) 4 1 True False [] False False False False False"
  ,"renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True False [] False False False False False"
  ,"renderGuitarConcept False AnnotatePositionVertical False True True standardTuning (harmony (majorScale A)) 4 0 True False [] True True False False False"
- ,"renderGuitarConcept False AnnotatePositionVertical False True True standardTuning [majorChord D,majorChord A,minorChord B,majorChord G] 4 0 True False [] True True False False False"
+ ,"concat . map hConcat $ renderGuitarConcept False AnnotatePositionVertical False True True standardTuning [majorChord D,majorChord A,minorChord B,majorChord G] 4 0 True False [] False False False False False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (majorScale F) 4 0 False False [] True False True True False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (shiftOctave 1 $ convertToSteps $ majorScale F) 4 0 False False [] True False True True False"
  ,"renderGuitarConcept False AnnotateNote False True True standardTuning (chordToScale (majorChord F)) 4 0 False False [] False False True True False"

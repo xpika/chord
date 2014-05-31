@@ -207,5 +207,5 @@ properGroup' f buf@(_:_) (x:xs) = if f x (last buf) then properGroup' f (buf++[x
 properGroup' f buf [] = [buf]
 
 
-hconcat w w2 =  unlines $ map concat $ transpose $ map (\x ->  map (\y ->  map head $ transpose [y, replicate ( maximum (map length  x)+1) ' '   ]   ) x   ) $ transpose $ transpose $ map lines [w,w2]
-
+hAppend w w2 =  unlines $ map concat $ transpose $ map (\x ->  map (\y ->  map head $ transpose [y, replicate ( maximum (map length  x)+1) ' '   ]   ) x   ) $ transpose $ transpose $ map lines [w,w2]
+hConcat = foldl1 hAppend

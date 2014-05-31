@@ -259,6 +259,11 @@ powerChord = [
               [True,True,True,False,False,False]
              ,[False,True,True,True,False,False]
              ]
+             
+standardWidths =            [
+              [True,True,True,True,True,True]
+             ,[False,True,True,True,True,True]
+             ]
 
 dropD = [D,A,D,G,B,E]
 ukelele = [C,E,G,A]

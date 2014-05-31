@@ -41,6 +41,10 @@ module Music.Instrument.Chord
  chordToScale
  ,
  slash
+ ,
+ hConcat
+ ,
+ standardWidths
 )
 where
 
