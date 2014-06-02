@@ -29,14 +29,14 @@ Fret: 3 Fret: 3
  ^^^^^^ 4----4- 
 333---3 5--55-- 
 4----4- 6------ 
-5--5--- 
-6------ 
+5--5---         
+6------         
 Prelude Music.Instrument.Chord> putStr $ concat $ map hConcat (renderGuitarConcept False AnnotateMarking False True True dropD (majorChord F) 4 0 True False [] False False False False False)
 =o==== Fret: 1 
 ----** ----**  
 ---*-- ---*--  
 *-*--- ***---  
------- 
+       ------  
 Prelude Music.Instrument.Chord> putStr $ concat $ map hConcat (renderGuitarConcept False AnnotatePositionVertical False True True standardTuning (harmony (majorScale A)) 4 0 True False [] True True False False False)
 002220
 224432
