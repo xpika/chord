@@ -5,7 +5,7 @@ module GetExpression
 where
 
 import Language.Haskell.TH
-import Language.Haskell.Meta.Parse.Careful
+import Language.Haskell.Meta.Parse
 import Data.Either
 
 getExpression string = head $ rights [parseExp string]

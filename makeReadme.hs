@@ -3,7 +3,7 @@ import System.IO
 import Music.Instrument.Chord 
 import Music.Instrument.Common
 import Language.Haskell.TH 
-import Language.Haskell.Meta.Parse.Careful 
+import Language.Haskell.Meta.Parse
 import Data.Either
 import GetExpression
 import Data.List
